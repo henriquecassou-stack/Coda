@@ -1,12 +1,45 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
+import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { brand, footer } from "@/lib/content";
 import { Logo } from "@/components/ui/Logo";
 
 export function Footer() {
+  const rootRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          "[data-footer-col]",
+          { autoAlpha: 0, y: 20 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            stagger: stagger.loose,
+            scrollTrigger: { trigger: rootRef.current, start: "top 88%", toggleActions: "play none none none" },
+          },
+        );
+      });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set("[data-footer-col]", { autoAlpha: 1, y: 0 });
+      });
+      return () => mm.revert();
+    },
+    { scope: rootRef },
+  );
+
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg)]">
+    <footer ref={rootRef} className="border-t border-[var(--color-border)] bg-[var(--color-bg)]">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
+          <div data-footer-col>
             <div className="flex items-center gap-2.5">
               <Logo className="h-8 w-8" />
               <span className="font-[var(--font-display)] text-lg font-bold tracking-[0.14em] text-white">
@@ -19,7 +52,7 @@ export function Footer() {
           </div>
 
           {footer.columns.map((col) => (
-            <div key={col.title}>
+            <div key={col.title} data-footer-col>
               <h4 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
                 {col.title}
               </h4>
@@ -38,7 +71,7 @@ export function Footer() {
             </div>
           ))}
 
-          <div>
+          <div data-footer-col>
             <h4 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
               Contato
             </h4>

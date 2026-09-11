@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Preloader } from "@/components/ui/Preloader";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" className={`${spaceGrotesk.variable} ${inter.variable} h-full`}>
       <body className="min-h-full bg-[var(--color-bg)] antialiased">
         <Preloader />
+        <ScrollProgress />
         <Header />
         <main>{children}</main>
         <Footer />

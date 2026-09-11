@@ -37,6 +37,28 @@ export function Services() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          "[data-eyebrow]",
+          { autoAlpha: 0, y: 14 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.base,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: rootRef.current, start: "top 85%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
+          "[data-heading-line] > span",
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: rootRef.current, start: "top 82%", toggleActions: "play none none none" },
+          },
+        );
+
         cards.forEach((card, i) => {
           const fromX = i % 2 === 0 ? -shift.lg : shift.lg;
           gsap.fromTo(
@@ -85,6 +107,8 @@ export function Services() {
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(cards, { autoAlpha: 1, x: 0 });
         gsap.set("[data-bullet]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-heading-line] > span", { yPercent: 0 });
       });
 
       return () => {
@@ -101,11 +125,18 @@ export function Services() {
     <section id="servicos" ref={rootRef} className="relative bg-[var(--color-bg)] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
-          <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
+          <p
+            data-eyebrow
+            className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase"
+          >
             O que fazemos
           </p>
           <h2 className="font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            DUAS FRENTES. <span className="text-gradient">UM SÓ TIME.</span>
+            <span data-heading-line className="block overflow-hidden">
+              <span className="block">
+                DUAS FRENTES. <span className="text-gradient">UM SÓ TIME.</span>
+              </span>
+            </span>
           </h2>
         </div>
 

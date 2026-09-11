@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
+import { dur, gsapEase, shift, stagger } from "@/lib/motion-tokens";
 import { pricing } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 
@@ -17,6 +17,27 @@ export function Pricing() {
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.fromTo(
+          "[data-eyebrow]",
+          { autoAlpha: 0, y: 14 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.base,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: rootRef.current, start: "top 85%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
+          "[data-heading-line] > span",
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: rootRef.current, start: "top 82%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
           cards,
           { autoAlpha: 0, y: 28 },
           {
@@ -26,6 +47,18 @@ export function Pricing() {
             ease: gsapEase.enter,
             stagger: stagger.loose,
             scrollTrigger: { trigger: rootRef.current, start: "top 78%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
+          "[data-feature]",
+          { autoAlpha: 0, y: shift.sm },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.base,
+            ease: gsapEase.enter,
+            stagger: stagger.tight,
+            scrollTrigger: { trigger: rootRef.current, start: "top 70%", toggleActions: "play none none none" },
           },
         );
 
@@ -48,6 +81,9 @@ export function Pricing() {
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(cards, { autoAlpha: 1, y: 0 });
+        gsap.set("[data-feature]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-heading-line] > span", { yPercent: 0 });
       });
 
       return () => mm.revert();
@@ -59,11 +95,18 @@ export function Pricing() {
     <section id="planos" className="relative bg-[var(--color-bg)] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
-          <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
+          <p
+            data-eyebrow
+            className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase"
+          >
             Investimento
           </p>
           <h2 className="font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            UM PLANO PARA <span className="text-gradient">CADA MOMENTO.</span>
+            <span data-heading-line className="block overflow-hidden">
+              <span className="block">
+                UM PLANO PARA <span className="text-gradient">CADA MOMENTO.</span>
+              </span>
+            </span>
           </h2>
         </div>
 
@@ -97,7 +140,7 @@ export function Pricing() {
 
               <ul className="mt-8 flex-1 space-y-3">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-[var(--color-fg-muted)]">
+                  <li key={f} data-feature className="flex items-start gap-3 text-sm text-[var(--color-fg-muted)]">
                     <span
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
                       style={{ background: "var(--gradient-brand)" }}

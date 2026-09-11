@@ -43,6 +43,16 @@ export function ContactCTA() {
             scrollTrigger: { trigger: sectionRef.current, start: "top 72%", toggleActions: "play none none none" },
           },
         );
+        gsap.fromTo(
+          "[data-heading-line] > span",
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: sectionRef.current, start: "top 72%", toggleActions: "play none none none" },
+          },
+        );
 
         // Magnetic submit button — desktop, fine-pointer only.
         const btn = submitRef.current;
@@ -71,6 +81,7 @@ export function ContactCTA() {
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set("[data-contact-reveal]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-heading-line] > span", { yPercent: 0 });
         if (traceRef.current) gsap.set(traceRef.current, { strokeDasharray: "none" });
       });
 
@@ -136,7 +147,9 @@ export function ContactCTA() {
             data-contact-reveal
             className="max-w-lg font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl"
           >
-            {contact.headline}
+            <span data-heading-line className="block overflow-hidden">
+              <span className="block">{contact.headline}</span>
+            </span>
           </h2>
           <p data-contact-reveal className="mt-6 max-w-sm text-base leading-relaxed text-[var(--color-fg-muted)]">
             {contact.sub}

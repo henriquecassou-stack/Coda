@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import { shift } from "@/lib/motion-tokens";
+import { dur, gsapEase, shift } from "@/lib/motion-tokens";
 import { process } from "@/lib/content";
 
 /**
@@ -27,6 +27,28 @@ export function Process() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          "[data-eyebrow]",
+          { autoAlpha: 0, y: 14 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.base,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
+          "[data-heading-line] > span",
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: section, start: "top 82%", toggleActions: "play none none none" },
+          },
+        );
+
         gsap.set(steps, { autoAlpha: 0, y: shift.md });
         gsap.set(steps[0], { autoAlpha: 1, y: 0 });
         gsap.set(railFill, { scaleY: 0, transformOrigin: "top center" });
@@ -73,6 +95,8 @@ export function Process() {
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(steps, { autoAlpha: 1, y: 0 });
         gsap.set(railFill, { scaleY: 1, transformOrigin: "top center" });
+        gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-heading-line] > span", { yPercent: 0 });
         dots.forEach((d) => d.classList.add("is-active"));
       });
 
@@ -85,11 +109,18 @@ export function Process() {
     <section id="como-funciona" ref={sectionRef} className="relative bg-[var(--color-bg-elevated)]">
       <div className="relative flex min-h-[100svh] items-center overflow-hidden">
         <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
-          <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
+          <p
+            data-eyebrow
+            className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase"
+          >
             Como funciona
           </p>
           <h2 className="mb-16 max-w-2xl font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            DO DIAGNÓSTICO <span className="text-gradient">AO SUPORTE.</span>
+            <span data-heading-line className="block overflow-hidden">
+              <span className="block">
+                DO DIAGNÓSTICO <span className="text-gradient">AO SUPORTE.</span>
+              </span>
+            </span>
           </h2>
 
           <div className="grid grid-cols-[auto_1fr] gap-8 sm:gap-14">

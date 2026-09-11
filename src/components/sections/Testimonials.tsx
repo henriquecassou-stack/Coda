@@ -52,16 +52,58 @@ export function Testimonials() {
     { dependencies: [index], scope: sectionRef },
   );
 
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          "[data-eyebrow]",
+          { autoAlpha: 0, y: 14 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.base,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: sectionRef.current, start: "top 85%", toggleActions: "play none none none" },
+          },
+        );
+        gsap.fromTo(
+          "[data-heading-line] > span",
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            scrollTrigger: { trigger: sectionRef.current, start: "top 82%", toggleActions: "play none none none" },
+          },
+        );
+      });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-heading-line] > span", { yPercent: 0 });
+      });
+      return () => mm.revert();
+    },
+    { scope: sectionRef },
+  );
+
   const current = testimonials[index];
 
   return (
     <section ref={sectionRef} className="relative bg-[var(--color-bg-elevated)] py-28 sm:py-36">
       <div className="mx-auto max-w-4xl px-6 text-center sm:px-10">
-        <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
+        <p
+          data-eyebrow
+          className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase"
+        >
           Prova social
         </p>
         <h2 className="mb-16 font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
-          QUEM JÁ <span className="text-gradient">AUTOMATIZOU</span> COM A GENTE.
+          <span data-heading-line className="block overflow-hidden">
+            <span className="block">
+              QUEM JÁ <span className="text-gradient">AUTOMATIZOU</span> COM A GENTE.
+            </span>
+          </span>
         </h2>
 
         <div className="relative min-h-[220px]">

@@ -79,6 +79,21 @@ Everything implemented so far. Check before choosing a technique so repetition i
 | 2026-09-11 | Prova social | C.16-lite stacking crossfade | `src/components/sections/Testimonials.tsx` | |
 | 2026-09-11 | Planos | Stagger + FLIP-style highlight | `src/components/sections/Pricing.tsx` | |
 | 2026-09-11 | CTA/Contato | E.23 Magnetic button, H.37 underline draw | `src/components/sections/ContactCTA.tsx` | |
+| 2026-09-11 | Global | C.17 Scroll progress indicator | `src/components/ui/ScrollProgress.tsx` | Thin gradient bar, always-on, pinned to `<body>` |
+| 2026-09-11 | Nav (header) | Load-in stagger | `src/components/layout/Header.tsx` | Logo, links, CTA fade+rise once on mount |
+| 2026-09-11 | All section headings | A.1 Masked line reveal | `Services.tsx`, `Process.tsx`, `Portfolio.tsx`, `Testimonials.tsx`, `Pricing.tsx`, `ContactCTA.tsx` | Extends the hero technique to every section transition, once each |
+| 2026-09-11 | Portfólio artwork | B.9 Inner parallax | `src/components/sections/Portfolio.tsx` | Scroll-scrubbed only, no independent loop |
+| 2026-09-11 | Planos feature lists | Tight stagger reveal | `src/components/sections/Pricing.tsx` | |
+| 2026-09-11 | Footer columns | Loose stagger reveal | `src/components/layout/Footer.tsx` | Converted to a client component for this |
+
+## 2026-09-11 — "more animation on scroll" pass
+User asked for more motion while scrolling. Added, in order of restraint:
+1. A global scroll-progress bar (supporting-layer, always tied to scroll position — never an independent loop, so it needs no separate pause control).
+2. Section-heading masked reveal on every remaining section (previously only the hero had this) — the single highest-value addition, since it gives every section transition its own moment.
+3. Real inner parallax on portfolio artwork (was documented in this file but never implemented — now it is).
+4. Stagger reveals on pricing feature lists and footer columns (previously these appeared as inert parts of their parent's fade).
+5. A small nav load-in on first paint.
+Deliberately **not** added: ambient background trace-lines drifting behind Services/Pricing — read as too close to the "blurred gradient blob" anti-pattern for the marginal gain; skipped to keep the density budget (≤1 medium-or-louder animation per viewport) intact.
 
 ## Decisions and lessons
 - Skipped a full custom cursor: adds input latency risk and breaks on touch; used a contained pointer-glow inside portfolio cards instead, gated to `(hover: hover) and (pointer: fine)`.
