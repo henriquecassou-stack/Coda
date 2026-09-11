@@ -40,6 +40,11 @@ Tudo em **`src/app/globals.css`**, no bloco `:root` no topo do arquivo:
 - `--font-display` / `--font-body` — apontam para as fontes carregadas em `src/app/layout.tsx`
   (Space Grotesk para títulos, Inter para texto corrido). Para trocar a fonte, troque o import do
   `next/font/google` em `layout.tsx`.
+  - Cada peso (`weight: [...]`) baixa um arquivo de fonte a mais — se adicionar um novo peso a um
+    componente (ex.: `font-black` num título), adicione esse peso na config do `layout.tsx` também;
+    se remover o último uso de um peso, remova-o de lá para não carregar um arquivo à toa. Peso
+    `font-bold` (700) num elemento que usa `--font-body` (Inter, carregada em 400/500/600) renderiza
+    em negrito sintético do navegador em vez da fonte real — prefira `font-semibold` nesses casos.
 
 Não é necessário mexer em nenhum componente para restilizar o site — os componentes só consomem essas
 variáveis.

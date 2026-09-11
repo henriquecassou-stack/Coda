@@ -147,7 +147,7 @@ export function Header() {
             }}
             href={item.href}
             onClick={() => setOpen(false)}
-            className="border-b border-[var(--color-border)] py-5 text-2xl font-bold tracking-[0.02em] text-white uppercase"
+            className="border-b border-[var(--color-border)] py-5 text-2xl font-semibold tracking-[0.02em] text-white uppercase"
           >
             {item.label}
           </a>

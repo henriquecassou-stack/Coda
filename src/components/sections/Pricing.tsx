@@ -136,7 +136,7 @@ export function Pricing() {
             >
               {plan.recommended && (
                 <span
-                  className="absolute -top-3 left-8 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.12em] text-black uppercase"
+                  className="absolute -top-3 left-8 rounded-full px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-black uppercase"
                   style={{ background: "var(--gradient-brand)" }}
                 >
                   Recomendado

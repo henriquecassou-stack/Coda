@@ -11,7 +11,10 @@ import { CustomCursor } from "@/components/ui/CustomCursor";
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  // 700 is the display weight used everywhere except the Testimonials
+  // quote, which uses 500 — 600 was never actually used, so it's dropped
+  // (one fewer font file downloaded; verified via grep across src/).
+  weight: ["500", "700"],
 });
 
 const inter = Inter({
