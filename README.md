@@ -59,9 +59,11 @@ caminho da imagem aos dados de cada case em `content.ts`.
 
 ### Formulário de contato
 
-O envio hoje é só um placeholder: `src/app/api/contact/route.ts` valida os campos e loga no console,
-mas **não envia e-mail de verdade**. Para ativar o envio real, plugue um provedor (ex:
-[Resend](https://resend.com), SendGrid, ou um CRM) dentro desse arquivo, no lugar do `console.log`.
+O envio hoje é só um placeholder: `src/app/api/contact/route.ts` valida os campos (tamanho máximo,
+formato de e-mail, remove CR/LF para evitar header injection quando isso virar e-mail de verdade) e
+loga no console, mas **não envia e-mail de verdade**. Para ativar o envio real, plugue um provedor (ex:
+[Resend](https://resend.com), SendGrid, ou um CRM) dentro desse arquivo, no lugar do `console.log` —
+e nesse momento também adicione **rate limiting** (ex: Upstash Ratelimit), que a rota ainda não tem.
 
 ## Sistema de animação (motion system)
 
