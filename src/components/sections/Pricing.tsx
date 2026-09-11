@@ -1,0 +1,121 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
+import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
+import { pricing } from "@/lib/content";
+import { Button } from "@/components/ui/Button";
+
+export function Pricing() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const cards = gsap.utils.toArray<HTMLElement>("[data-pricing-card]");
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          cards,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: dur.slow,
+            ease: gsapEase.enter,
+            stagger: stagger.loose,
+            scrollTrigger: { trigger: rootRef.current, start: "top 78%", toggleActions: "play none none none" },
+          },
+        );
+
+        const recommended = rootRef.current?.querySelector("[data-pricing-recommended]");
+        if (recommended) {
+          gsap.fromTo(
+            recommended,
+            { boxShadow: "0 0 0 0 rgba(139,92,246,0)" },
+            {
+              boxShadow: "0 0 60px 6px rgba(139,92,246,0.35)",
+              duration: dur.slower,
+              ease: gsapEase.enter,
+              yoyo: true,
+              repeat: 1,
+              scrollTrigger: { trigger: rootRef.current, start: "top 78%", toggleActions: "play none none none" },
+            },
+          );
+        }
+      });
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(cards, { autoAlpha: 1, y: 0 });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: rootRef },
+  );
+
+  return (
+    <section id="planos" className="relative bg-[var(--color-bg)] py-28 sm:py-36">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        <div className="mb-16 max-w-2xl">
+          <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
+            Investimento
+          </p>
+          <h2 className="font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            UM PLANO PARA <span className="text-gradient">CADA MOMENTO.</span>
+          </h2>
+        </div>
+
+        <div ref={rootRef} className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {pricing.map((plan) => (
+            <div
+              key={plan.id}
+              data-pricing-card
+              {...(plan.recommended ? { "data-pricing-recommended": true } : {})}
+              className={`relative flex flex-col rounded-3xl p-8 sm:p-9 ${
+                plan.recommended
+                  ? "border-gradient bg-[var(--color-bg-elevated-2)] lg:-translate-y-4"
+                  : "border border-[var(--color-border)] bg-[var(--color-bg-elevated)]"
+              }`}
+            >
+              {plan.recommended && (
+                <span
+                  className="absolute -top-3 left-8 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.12em] text-black uppercase"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  Recomendado
+                </span>
+              )}
+
+              <h3 className="font-[var(--font-display)] text-lg font-bold tracking-[0.08em] text-white">
+                {plan.name}
+              </h3>
+              <p className="mt-2 text-sm text-[var(--color-fg-muted)]">{plan.description}</p>
+
+              <p className="mt-8 font-[var(--font-display)] text-2xl font-bold text-white">{plan.price}</p>
+
+              <ul className="mt-8 flex-1 space-y-3">
+                {plan.features.map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-[var(--color-fg-muted)]">
+                    <span
+                      className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ background: "var(--gradient-brand)" }}
+                    />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-9">
+                <Button href="#contato" variant={plan.recommended ? "primary" : "secondary"} className="w-full">
+                  Solicitar orçamento
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,0 +1,138 @@
+"use client";
+
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
+import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
+import { brand, nav } from "@/lib/content";
+import { Logo } from "@/components/ui/Logo";
+import { Button } from "@/components/ui/Button";
+
+export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<HTMLAnchorElement[]>([]);
+
+  useGSAP(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useGSAP(
+    () => {
+      const menu = menuRef.current;
+      if (!menu) return;
+      const links = linksRef.current.filter(Boolean);
+
+      if (open) {
+        document.body.style.overflow = "hidden";
+        gsap.set(menu, { display: "flex" });
+        gsap.fromTo(
+          menu,
+          { clipPath: "inset(0% 0% 100% 0%)" },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: dur.slow, ease: gsapEase.move },
+        );
+        gsap.fromTo(
+          links,
+          { autoAlpha: 0, y: 16 },
+          { autoAlpha: 1, y: 0, duration: dur.base, ease: gsapEase.enter, stagger: stagger.base, delay: 0.12 },
+        );
+      } else {
+        document.body.style.overflow = "";
+        gsap.to(menu, {
+          clipPath: "inset(0% 0% 100% 0%)",
+          duration: dur.base,
+          ease: gsapEase.exit,
+          onComplete: () => gsap.set(menu, { display: "none" }),
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+      };
+    },
+    { dependencies: [open] },
+  );
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-[var(--dur-base)] ${
+        scrolled ? "bg-[var(--color-bg)]/85 backdrop-blur-md border-b border-[var(--color-border)]" : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-10">
+        <Link href="#top" className="flex items-center gap-2.5" aria-label={brand.name}>
+          <Logo className="h-8 w-8" />
+          <span className="font-[var(--font-display)] text-lg font-bold tracking-[0.14em] text-white">
+            {brand.name}
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-9 md:flex">
+          {nav.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="relative text-xs font-semibold tracking-[0.12em] text-[var(--color-fg-muted)] uppercase transition-colors duration-[var(--dur-fast)] hover:text-white [&:hover>span]:scale-x-100"
+            >
+              {item.label}
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-[var(--gradient-brand)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-enter)]" />
+            </a>
+          ))}
+        </nav>
+
+        <div className="hidden md:block">
+          <Button href="#contato" className="!px-5 !py-2.5 !text-xs">
+            Começar projeto
+          </Button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] md:hidden"
+          aria-expanded={open}
+          aria-label="Abrir menu"
+        >
+          <span className="relative block h-3 w-4">
+            <span
+              className={`absolute left-0 top-0 h-px w-4 bg-white transition-transform duration-[var(--dur-fast)] ${open ? "translate-y-[6px] rotate-45" : ""}`}
+            />
+            <span
+              className={`absolute left-0 bottom-0 h-px w-4 bg-white transition-transform duration-[var(--dur-fast)] ${open ? "-translate-y-[6px] -rotate-45" : ""}`}
+            />
+          </span>
+        </button>
+      </div>
+
+      <div
+        ref={menuRef}
+        className="fixed inset-x-0 top-[73px] bottom-0 hidden flex-col justify-center gap-1 overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 md:hidden"
+        style={{ clipPath: "inset(0% 0% 100% 0%)" }}
+      >
+        {nav.map((item, i) => (
+          <a
+            key={item.href}
+            ref={(el) => {
+              if (el) linksRef.current[i] = el;
+            }}
+            href={item.href}
+            onClick={() => setOpen(false)}
+            className="border-b border-[var(--color-border)] py-5 text-2xl font-bold tracking-[0.02em] text-white uppercase"
+          >
+            {item.label}
+          </a>
+        ))}
+        <div className="pt-8">
+          <Button href="#contato" className="w-full" onClick={() => setOpen(false)}>
+            Começar projeto
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}

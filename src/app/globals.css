@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   CODA — design tokens
+   Edit colors/fonts here to restyle the whole site without touching
+   animation logic (see MOTION.md for the motion tokens below).
+   ========================================================================== */
+
+:root {
+  /* Brand surface */
+  --color-bg: #050507;
+  --color-bg-elevated: #0c0c12;
+  --color-bg-elevated-2: #121218;
+  --color-border: rgba(255, 255, 255, 0.09);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+
+  /* Text */
+  --color-fg: #ffffff;
+  --color-fg-muted: #9a9aa8;
+  --color-fg-faint: #5c5c68;
+
+  /* Brand gradient — ciano → azul → violeta */
+  --color-cyan: #2dd4f0;
+  --color-blue: #3d5cff;
+  --color-violet: #8b5cf6;
+  --gradient-brand: linear-gradient(115deg, #2dd4f0 0%, #3d5cff 52%, #8b5cf6 100%);
+  --gradient-brand-soft: linear-gradient(115deg, rgba(45, 212, 240, 0.16) 0%, rgba(61, 92, 255, 0.16) 52%, rgba(139, 92, 246, 0.16) 100%);
+
+  /* Fonts (set in layout.tsx via next/font, exposed here as variables) */
+  --font-display: var(--font-space-grotesk), "Arial", sans-serif;
+  --font-body: var(--font-inter), "Arial", sans-serif;
+
+  /* ---- Motion tokens (MOTION.md is the source of truth) ---- */
+  --dur-instant: 120ms;
+  --dur-fast: 220ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
+  --dur-slower: 1000ms;
+  --dur-epic: 1600ms;
+
+  --ease-enter: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-exit: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-move: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-scrub: linear;
+
+  --shift-sm: 8px;
+  --shift-md: 24px;
+  --shift-lg: 64px;
+
+  --stagger-tight: 25ms;
+  --stagger-base: 60ms;
+  --stagger-loose: 120ms;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-bg-elevated-2: var(--color-bg-elevated-2);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-faint: var(--color-fg-faint);
+  --color-cyan: var(--color-cyan);
+  --color-blue: var(--color-blue);
+  --color-violet: var(--color-violet);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html {
+  background: var(--color-bg);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-blue);
+  color: #ffffff;
+}
+
+/* Utility: gradient text for key words */
+.text-gradient {
+  background: var(--gradient-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Utility: gradient border (1px) via padding trick */
+.border-gradient {
+  position: relative;
+  border: 1px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+}
+.border-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--gradient-brand);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Focus ring, brand-colored, visible for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+}
+
+/* Reduced-motion baseline: collapse durations, remove travel, no infinite loops */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 120ms;
+    --dur-slow: 150ms;
+    --dur-slower: 150ms;
+    --dur-epic: 150ms;
+    --shift-sm: 0px;
+    --shift-md: 0px;
+    --shift-lg: 0px;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Portfolio cursor-glow and hover-only affordances are already gated by
+     (hover: hover) and (pointer: fine) in component code. */
+}
