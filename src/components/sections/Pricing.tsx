@@ -104,7 +104,7 @@ export function Pricing() {
   );
 
   return (
-    <section id="planos" className="relative bg-[var(--color-bg)] py-28 sm:py-36">
+    <section id="planos" ref={rootRef} className="relative bg-[var(--color-bg)] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p
@@ -122,7 +122,7 @@ export function Pricing() {
           </h2>
         </div>
 
-        <div ref={rootRef} className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {pricing.map((plan) => (
             <div
               key={plan.id}

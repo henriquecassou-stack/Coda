@@ -102,7 +102,7 @@ export function Portfolio() {
   );
 
   return (
-    <section id="portfolio" className="relative bg-[var(--color-bg)] py-28 sm:py-36">
+    <section id="portfolio" ref={rootRef} className="relative bg-[var(--color-bg)] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p
@@ -120,7 +120,7 @@ export function Portfolio() {
           </h2>
         </div>
 
-        <div ref={rootRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {portfolio.map((item) => (
             <article
               key={item.id}
