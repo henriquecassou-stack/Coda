@@ -71,6 +71,84 @@ export const services = [
   },
 ] as const;
 
+// Bento-grid capability/outcome cards — asymmetric sizes are intentional
+// (see MOTION.md "2026-09-11 — layout inspiration pass").
+export type CapabilityCell =
+  | {
+      id: string;
+      size: "lg" | "md" | "full";
+      kind: "stat";
+      value: number;
+      decimals?: number;
+      prefix?: string;
+      suffix?: string;
+      label: string;
+    }
+  | { id: string; size: "md"; kind: "text"; value: string; label: string }
+  | { id: string; size: "wide"; kind: "chips"; label: string; chips: string[] };
+
+export const capabilities: {
+  eyebrow: string;
+  headline: string;
+  headlineGradient: string;
+  cells: CapabilityCell[];
+} = {
+  eyebrow: "CAPACIDADES",
+  headline: "O QUE MUDA",
+  headlineGradient: "NA PRÁTICA.",
+  cells: [
+    {
+      id: "tempo",
+      size: "lg",
+      kind: "stat",
+      value: 70,
+      prefix: "-",
+      suffix: "%",
+      label: "menos tempo gasto em tarefas manuais depois de uma automação com IA",
+    },
+    {
+      id: "atendimento",
+      size: "md",
+      kind: "text",
+      value: "24/7",
+      label: "Atendimento automático que nunca dorme — no WhatsApp, e-mail e formulário",
+    },
+    {
+      id: "leads",
+      size: "md",
+      kind: "stat",
+      value: 2.4,
+      decimals: 1,
+      prefix: "+",
+      suffix: "x",
+      label: "mais leads qualificados, sem aumentar o time comercial",
+    },
+    {
+      id: "integracoes",
+      size: "wide",
+      kind: "chips",
+      label: "Integrações prontas",
+      chips: ["CRM", "WhatsApp", "ERP", "Planilhas", "E-mail"],
+    },
+    {
+      id: "prazo",
+      size: "full",
+      kind: "stat",
+      value: 3,
+      suffix: " semanas",
+      label: "tempo médio até o site novo estar no ar",
+    },
+  ],
+};
+
+// Full-bleed editorial statement — a deliberate rhythm-breaker between the
+// proof-heavy Portfolio and Prova social sections (see MOTION.md).
+export const manifesto = {
+  eyebrow: "A DIFERENÇA",
+  lines: ["MENOS TAREFA.", "MAIS NEGÓCIO."],
+  highlightLine: "MAIS NEGÓCIO.",
+};
+
 export const process = [
   {
     number: "01",
