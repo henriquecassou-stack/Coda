@@ -29,17 +29,6 @@ export function Capabilities() {
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.fromTo(
-          "[data-eyebrow]",
-          { autoAlpha: 0, y: 14 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: dur.base,
-            ease: gsapEase.enter,
-            scrollTrigger: { trigger: rootRef.current, start: "top 85%", toggleActions: "play none none none" },
-          },
-        );
-        gsap.fromTo(
           "[data-heading-line] > span",
           { yPercent: 100 },
           {
@@ -85,7 +74,6 @@ export function Capabilities() {
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(cells, { autoAlpha: 1, scale: 1 });
-        gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
         gsap.set("[data-heading-line] > span", { yPercent: 0 });
         cells.forEach((cell) => {
           const statEl = cell.querySelector<HTMLElement>("[data-stat-value]");
@@ -115,12 +103,6 @@ export function Capabilities() {
     <section id="capacidades" ref={rootRef} className="relative bg-[var(--color-bg)] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
-          <p
-            data-eyebrow
-            className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase"
-          >
-            {capabilities.eyebrow}
-          </p>
           <h2 className="font-[var(--font-display)] text-4xl font-bold tracking-tight text-white sm:text-5xl">
             <span data-heading-line className="block overflow-hidden">
               <span className="block">
@@ -135,7 +117,7 @@ export function Capabilities() {
             <div
               key={cell.id}
               data-cell
-              className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 transition-colors duration-[var(--dur-base)] hover:border-[var(--color-border-strong)] sm:p-8 ${sizeClass[cell.size]}`}
+              className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white/[0.035] p-6 transition-colors duration-[var(--dur-base)] hover:bg-white/[0.065] sm:p-8 ${sizeClass[cell.size]}`}
             >
               {cell.size === "lg" && (
                 <span

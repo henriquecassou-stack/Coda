@@ -88,12 +88,10 @@ export type CapabilityCell =
   | { id: string; size: "wide"; kind: "chips"; label: string; chips: string[] };
 
 export const capabilities: {
-  eyebrow: string;
   headline: string;
   headlineGradient: string;
   cells: CapabilityCell[];
 } = {
-  eyebrow: "CAPACIDADES",
   headline: "O QUE MUDA",
   headlineGradient: "NA PRÁTICA.",
   cells: [
@@ -144,7 +142,6 @@ export const capabilities: {
 // Full-bleed editorial statement — a deliberate rhythm-breaker between the
 // proof-heavy Portfolio and Prova social sections (see MOTION.md).
 export const manifesto = {
-  eyebrow: "A DIFERENÇA",
   lines: ["MENOS TAREFA.", "MAIS NEGÓCIO."],
   highlightLine: "MAIS NEGÓCIO.",
 };
