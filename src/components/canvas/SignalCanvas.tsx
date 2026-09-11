@@ -33,6 +33,8 @@ export function SignalCanvas({ className }: { className?: string }) {
     let raf = 0;
     let running = false;
     const reduced = prefersReducedMotion();
+    const reactive = window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduced;
+    const mouse = { x: -9999, y: -9999 };
 
     function resize() {
       const rect = canvas!.getBoundingClientRect();
@@ -114,7 +116,23 @@ export function SignalCanvas({ className }: { className?: string }) {
       });
 
       if (animate) {
+        const repelRadius = 130;
         for (const n of nodes) {
+          if (reactive) {
+            const dx = n.x - mouse.x;
+            const dy = n.y - mouse.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < repelRadius && dist > 0.01) {
+              const force = (1 - dist / repelRadius) * 0.06;
+              n.vx += (dx / dist) * force;
+              n.vy += (dy / dist) * force;
+              // Damp only while a force is actively applied, so the
+              // repulsion can't accumulate unbounded speed but the node's
+              // normal ambient drift elsewhere is untouched.
+              n.vx *= 0.9;
+              n.vy *= 0.9;
+            }
+          }
           n.x += n.vx;
           n.y += n.vy;
           if (n.x < 0 || n.x > width) n.vx *= -1;
@@ -168,11 +186,31 @@ export function SignalCanvas({ className }: { className?: string }) {
     };
     document.addEventListener("visibilitychange", onVisibility);
 
+    function onPointerMove(e: PointerEvent) {
+      const rect = canvas!.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    }
+    function onPointerLeave() {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }
+    if (reactive) {
+      // Listen on window, not the canvas: the canvas and its wrapper are
+      // pointer-events:none so page content behind the hero stays clickable.
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerleave", onPointerLeave);
+    }
+
     return () => {
       stop();
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
+      if (reactive) {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerleave", onPointerLeave);
+      }
     };
   }, []);
 

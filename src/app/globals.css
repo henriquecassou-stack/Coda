@@ -120,6 +120,97 @@ body {
   outline-offset: 3px;
 }
 
+/* ---------- Custom cursor (desktop, fine-pointer only, off under reduced motion) ----------
+   Hidden by default (no-JS-safe: the native cursor is the correct fallback).
+   src/components/ui/CustomCursor.tsx toggles `has-custom-cursor` on <html> only
+   after confirming a hover-capable, motion-allowed pointer, and removes it again
+   whenever the pointer is over a form field. */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  display: none;
+}
+html.has-custom-cursor {
+  cursor: none;
+}
+html.has-custom-cursor a,
+html.has-custom-cursor button,
+html.has-custom-cursor [data-case-card] {
+  cursor: none;
+}
+html.has-custom-cursor .cursor-layer {
+  display: block;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Constant centering via the standalone `translate` property (composites
+     with GSAP's own `transform: translate(x,y)` independently) instead of
+     negative margin — margin is a layout property and triggers reflow on
+     every state change; translate does not. Sized at the largest state's
+     footprint and scaled down for the others, for the same reason: `scale`
+     is a transform-adjacent property, `width`/`height` are layout. */
+  translate: -50% -50%;
+  width: 74px;
+  height: 74px;
+  scale: 0.46;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: difference;
+  will-change: transform;
+  transition:
+    scale var(--dur-base) var(--ease-enter),
+    background-color var(--dur-base),
+    border-color var(--dur-base);
+}
+.cursor-ring[data-state="link"] {
+  scale: 0.7;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: transparent;
+}
+.cursor-ring[data-state="view"] {
+  scale: 1;
+  background: var(--gradient-brand);
+  border-color: transparent;
+  mix-blend-mode: normal;
+}
+.cursor-label {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.cursor-ring[data-state="view"] .cursor-label {
+  opacity: 1;
+}
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ffffff;
+  will-change: transform;
+  transition: opacity var(--dur-fast);
+}
+.cursor-ring[data-state="link"] ~ .cursor-dot,
+.cursor-ring[data-state="view"] ~ .cursor-dot {
+  opacity: 0;
+}
+
 /* Reduced-motion baseline: collapse durations, remove travel, no infinite loops */
 @media (prefers-reduced-motion: reduce) {
   :root {

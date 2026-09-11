@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { hero } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
@@ -21,14 +21,34 @@ export function Hero() {
           "[data-hero=eyebrow]",
           { autoAlpha: 0, y: 12 },
           { autoAlpha: 1, y: 0, duration: dur.base, ease: gsapEase.enter },
-        )
-          .fromTo(
-            "[data-hero=line] > span",
-            { yPercent: 100 },
-            { yPercent: 0, duration: dur.slow, ease: gsapEase.enter, stagger: stagger.base },
-            "-=0.15",
-          )
-          .fromTo(
+        );
+
+        // Plain lines cascade in character by character; the highlighted
+        // line keeps the whole-block mask reveal — the "lock" moment after
+        // the flutter of characters (see MOTION.md, hero choreography).
+        // Below ~640px, SplitText's per-character mask boxes measure a
+        // hair wider than the plain text run did and can push a long word
+        // past the line width, breaking it mid-word — so narrow viewports
+        // keep the simpler, already-proven whole-line reveal instead.
+        const useCharSplit = window.innerWidth >= 640;
+        const lineEls = gsap.utils.toArray<HTMLElement>("[data-hero=line]");
+        lineEls.forEach((lineEl, i) => {
+          const inner = lineEl.querySelector<HTMLElement>(":scope > span");
+          if (!inner) return;
+          const position = i === 0 ? "-=0.15" : "<0.1";
+          if (!useCharSplit || hero.headlineLines[i] === hero.highlightWord) {
+            tl.fromTo(inner, { yPercent: 100 }, { yPercent: 0, duration: dur.slow, ease: gsapEase.enter }, position);
+          } else {
+            const split = SplitText.create(inner, { type: "chars", mask: "chars" });
+            tl.from(
+              split.chars,
+              { yPercent: 100, autoAlpha: 0, duration: dur.base, stagger: stagger.tight, ease: gsapEase.enter },
+              position,
+            );
+          }
+        });
+
+        tl.fromTo(
             "[data-hero=sub]",
             { autoAlpha: 0, y: 16 },
             { autoAlpha: 1, y: 0, duration: dur.base, ease: gsapEase.enter },
@@ -80,7 +100,38 @@ export function Hero() {
         );
       });
 
-      return () => mm.revert();
+      // Mouse-reactive backdrop — the canvas drifts a few px toward the
+      // pointer, on top of the node network's own pointer repulsion.
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let onPointerMove: ((e: PointerEvent) => void) | undefined;
+      let onPointerLeave: (() => void) | undefined;
+      if (canHover && !reducedMotion && rootRef.current) {
+        const canvasWrap = rootRef.current.querySelector<HTMLElement>("[data-hero=canvas]");
+        if (canvasWrap) {
+          const moveX = gsap.quickTo(canvasWrap, "x", { duration: 0.6, ease: "power3" });
+          const moveY = gsap.quickTo(canvasWrap, "y", { duration: 0.6, ease: "power3" });
+          onPointerMove = (e: PointerEvent) => {
+            const r = rootRef.current!.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            moveX(px * 18);
+            moveY(py * 18);
+          };
+          onPointerLeave = () => {
+            moveX(0);
+            moveY(0);
+          };
+          rootRef.current.addEventListener("pointermove", onPointerMove);
+          rootRef.current.addEventListener("pointerleave", onPointerLeave);
+        }
+      }
+
+      return () => {
+        mm.revert();
+        if (onPointerMove) rootRef.current?.removeEventListener("pointermove", onPointerMove);
+        if (onPointerLeave) rootRef.current?.removeEventListener("pointerleave", onPointerLeave);
+      };
     },
     { scope: rootRef },
   );

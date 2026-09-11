@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { dur, gsapEase, shift, stagger } from "@/lib/motion-tokens";
 import { services } from "@/lib/content";
+import { attachTilt } from "@/lib/tilt";
 
 const icons: Record<string, React.ReactNode> = {
   automacoes: (
@@ -111,8 +112,17 @@ export function Services() {
         gsap.set("[data-heading-line] > span", { yPercent: 0 });
       });
 
+      // 3D pointer-tilt — the panel catches the signal's light. Desktop,
+      // fine-pointer only; never wired under reduced motion.
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const tiltCleanups: Array<() => void> = [];
+      if (canHover && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        cards.forEach((card) => tiltCleanups.push(attachTilt(card, 6)));
+      }
+
       return () => {
         mm.revert();
+        tiltCleanups.forEach((fn) => fn());
         ScrollTrigger.getAll().forEach((st) => {
           if (cards.includes(st.trigger as HTMLElement)) st.kill();
         });

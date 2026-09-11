@@ -13,14 +13,27 @@ Source of truth for motion on the CODA site. Read before adding or changing anim
 
 **Dials**
 - Tempo: Snappy-to-moderate for UI and entrances (200–700ms); linear/scrub for anything tied to scroll position.
-- Energy: Critically damped — no overshoot anywhere except the single magnetic CTA button (tiny, deliberate spring), which is the one place the brand allows a moment of "play."
+- Energy: Critically damped — no overshoot anywhere except the magnetic CTA button and, as of the 2026-09-11 louder pass, the custom cursor's own spring-back — both read as "the signal briefly overshoots its lock, then settles," not generic bounce.
 - Direction: Consistent axis. Text and panels rise from below (mirrors the ribbon's upward fold in the logo). Decorative trace lines always run bottom-left → top-right, the same diagonal as the logo's fold.
 - Material: Light traveling on a circuit trace / a folded ribbon of light — thin gradient strokes that draw themselves, flat panels with a subtle specular sheen, never soft or organic (no blur-drift blobs, no elastic wobble).
-- Density: Restrained. One loud moment per section, generous negative space, never more than one medium-or-louder animation running at once.
+- Density: **Layered, not restrained** (revised 2026-09-11 — see below). One scroll-triggered *section* moment at a time, as before, but continuous *ambient/supporting* layers (cursor, card tilt, inertial scroll) are now allowed to run underneath without counting against that budget — they respond to the user's own input rather than competing for attention on their own schedule.
 
-**Techniques that fit the concept:** masked line reveals, path/line draws, clip-path wipes, scroll-scrubbed progress rails, grid/list staggers, number counters, magnetic CTA, FLIP-style plan highlight.
+**Techniques that fit the concept:** masked line and char reveals, path/line draws, clip-path wipes, scroll-scrubbed progress rails, grid/list staggers, number counters, magnetic CTA, FLIP-style plan highlight, inertial (Lenis) scroll, a signal-shaped custom cursor, pointer-tilt panels.
 
-**Techniques that don't fit (and why):** blurred gradient blobs drifting behind sections (too organic — the brand is precise, not ambient), bouncy/springy entrances (reads as playful-consumer, not tech-premium), endless logo marquees (generic), full custom cursor replacement (adds latency risk and fights touch devices) — used only as a contained glow inside portfolio cards instead.
+**Techniques that don't fit (and why):** blurred gradient blobs drifting behind sections (too organic — the brand is precise, not ambient), bouncy/springy entrances (reads as playful-consumer, not tech-premium), endless logo marquees (generic).
+
+## 2026-09-11 — louder tier (client: "one of the best websites, a lot of animations")
+The client asked for a full tier up from the initial restrained pass. Rather than abandon the concept, the density dial moved and two prior exclusions were reconsidered and re-justified against the *same* metaphor instead of dropped for generic reasons:
+
+- **Custom cursor** (previously excluded: "adds latency risk and fights touch devices") — reconsidered because a cursor that literally *is the signal* (a dot at the exact pointer position, a trailing ring, states that fill/label over interactive targets) is the metaphor made literal, not decoration. Kept every original guardrail: hover-fine only, off under reduced motion, `display:none` by default (no-JS-safe — native cursor is the fallback), and explicitly restored the native cursor over `input/textarea/select` (the one rule the catalog calls non-negotiable). See `src/components/ui/CustomCursor.tsx`.
+- **Smooth/inertial scroll** (previously excluded: "the concept is about precision, not glide") — reconsidered as "the signal travels the trace with weight" rather than glide-for-its-own-sake. Lenis, synced to `gsap.ticker` per the gsap-scrolltrigger skill's own integration recipe so the Process pin doesn't jitter; off entirely under reduced motion (native scroll is the fallback, not a degraded Lenis). See `src/components/ui/SmoothScroll.tsx`.
+
+New additions that didn't require reconsidering anything (straightforwardly fit already-approved technique families):
+- **3D pointer-tilt** on Services/Portfolio/Pricing cards — "the panel catches the signal's light," a literal reading of the "specular sheen" material dial that was already in the brief. Small angle (6°), hover-fine only, off under reduced motion. `src/lib/tilt.ts`.
+- **Character-level hero reveal** — the plain headline lines now cascade in char-by-char (GSAP SplitText); the highlighted line keeps its existing whole-block mask reveal so the "lock" moment (chars flutter in, then the key phrase drops into place as one piece) reads as an intentional two-part beat, not a style switch mid-headline.
+- **Mouse-reactive hero canvas** — the signal-node network now has a pointer-repulsion field (nodes part around the cursor within ~130px) and the whole canvas drifts a few px toward the pointer; both are purely proximity-driven (no independent loop to pause) and gated to hover-fine + no-preference.
+
+Deliberately still **not** added, even at this louder tier: an endless marquee, blob drift, or a second WebGL/shader layer — those would be volume without a reason tied to the metaphor, which is the actual anti-pattern the skill warns about, not "too much motion" as a number.
 
 ## Tokens
 Implemented in: `src/app/globals.css` (CSS custom properties) and `src/lib/motion-tokens.ts` (JS/GSAP mirror).
@@ -41,18 +54,31 @@ Implemented in: `src/app/globals.css` (CSS custom properties) and `src/lib/motio
 | --shift-sm / md / lg | 8px / 24px / 64px | travel distances |
 | stagger tight / base / loose | 0.02s / 0.06s / 0.12s | chars / words-icons / cards |
 
+New, as of the louder-tier pass — implemented as plain constants at their call site rather than CSS vars, since they're consumed only by JS/Canvas math, not styled elements:
+
+| Constant | Value | Used for | Where |
+|---|---|---|---|
+| tilt max angle | 6° | Services / Portfolio / Pricing card tilt | `attachTilt(el, 6)` calls |
+| cursor dot lag | 0.1s | the dot tracks the literal pointer position | `CustomCursor.tsx` |
+| cursor ring lag | 0.35s | the ring trails, reads as "signal catching up" | `CustomCursor.tsx` |
+| canvas repulsion radius | 130px | node network parting around the cursor | `SignalCanvas.tsx` |
+| canvas parallax range | ±18px | whole backdrop drift toward pointer | `Hero.tsx` |
+| Lenis lerp | 0.1 | scroll inertia smoothing factor | `SmoothScroll.tsx` |
+
 ## Tools
 - CSS: Tailwind v4 utilities + custom properties for tokens; native `@media (prefers-reduced-motion: reduce)`.
-- JS library: GSAP 3.15 (free SplitText, DrawSVGish via manual stroke-dashoffset, Flip) + `@gsap/react` `useGSAP` hook + `ScrollTrigger`.
-- Smooth scroll: no — native scroll kept intact; ScrollTrigger reads native scroll. (Lenis would fight trackpad/keyboard expectations and isn't needed for this concept.)
-- WebGL: no — the hero's "automation" visual is a lightweight Canvas2D signal/node network (cheap, no Three.js dependency), matching "canvas leve" from the brief and the precision-over-spectacle concept.
+- JS library: GSAP 3.15 (SplitText, DrawSVGish via manual stroke-dashoffset, Flip available but unused) + `@gsap/react` `useGSAP` hook + `ScrollTrigger`.
+- Smooth scroll: **yes, as of 2026-09-11** — Lenis (`lenis` npm package), synced to `gsap.ticker`, off under reduced motion. `src/components/ui/SmoothScroll.tsx`.
+- Custom cursor: **yes, as of 2026-09-11** — vanilla `quickTo`-driven dot+ring, `src/components/ui/CustomCursor.tsx`. Hover-fine + no-preference only.
+- 3D tilt: **yes, as of 2026-09-11** — shared `attachTilt()` helper in `src/lib/tilt.ts`, applied per-card inside each section's existing `canHover` block.
+- WebGL: still no — the hero's "automation" visual stays a lightweight Canvas2D signal/node network (now with pointer repulsion), matching "canvas leve" from the brief. A second, heavier visual layer wasn't judged to add more than the interaction-driven techniques above.
 
 ## Choreography map
 
 | Section | Layer | Technique (family) | Trigger | Tempo | Reduced-motion version | Notes / motif |
 |---|---|---|---|---|---|---|
 | Preloader | Signature | Ribbon path draw (F.28) | Load | Epic (≤1.5s), once per session | Skips straight to instant crossfade | Motif #1 — the mark folds itself once |
-| Hero | Signature | Masked line reveal headline (A.1) + Canvas2D signal-node backdrop (G-lite) | Load | Slow, staggered base | Lines fade in with no mask animation; canvas static/paused | Trace lines run bottom-left→top-right |
+| Hero | Signature | Char-split cascade (A.1 variant) on plain lines + whole-block mask on the highlight line + Canvas2D signal-node backdrop with pointer repulsion (G-lite) | Load + pointer | Slow, tight stagger for chars | Lines fade in with no split/mask animation; canvas static, no repulsion | Trace lines run bottom-left→top-right; canvas drifts toward pointer (hover-fine only) |
 | Serviços | Section | Icon scale-fade (D-lite) + contextual slide-in (left block from left, right block from right) | Scroll-enter, once | Base | Opacity-only crossfade | |
 | Como funciona | Signature | Pinned storytelling timeline + scroll progress rail (C.14 + C.17) | Pin + scrub, ≤3vh | Scrub = linear | No pin; steps stack as a static list, rail fills on enter instead of scrub | Motif #2 — the rail is the ribbon line, growing |
 | Portfólio | Section | Clip-path wipe reveal on enter (B.8) + inner parallax (B.9) + cursor glow (E.27, hover-fine only) | Scroll-enter + pointer | Base/fast | No parallax, static image, no glow | |
@@ -60,10 +86,14 @@ Implemented in: `src/app/globals.css` (CSS custom properties) and `src/lib/motio
 | Planos | Section | Loose stagger reveal + recommended-card pulse highlight | Scroll-enter, once | Base | Opacity-only, no pulse loop (single glow, then stops) | |
 | CTA final / Contato | Signature-ish | Magnetic button (E.23) + input label float + underline draw (H.37) + ribbon trace closes | Pointer / focus | Fast | No magnetic follow, standard focus ring | Motif #3 — ribbon trace reappears once, closing the loop |
 | Global | Supporting | Underline draw on links, press scale on buttons, mobile menu curtain | Hover/tap | Fast | Same everywhere, opacity/scale only |
+| Global | Ambient (new) | Custom cursor (dot+ring, states over links/cards) | Pointer, continuous | Instant/base lag | Off — native cursor | Hover-fine only; never over form fields |
+| Global | Ambient (new) | Inertial (Lenis) scroll | Scroll, continuous | lerp 0.1 | Off — native scroll | Synced to `gsap.ticker`; anchor links use `lenis.scrollTo` |
+| Serviços / Portfólio / Planos cards | Supporting (new) | 3D pointer-tilt (E.25) | Pointer | Base | Off | Panels "catch the signal's light" |
 
 ## Motifs
 - **The ribbon fold** (bottom-left → top-right diagonal, single clean fold): appears in the preloader (drawn), in "Como funciona" (as the progress rail), and once more in the final CTA (closing trace). Never a fourth time — three is the rhythm.
 - **Rise-and-lock**: every section-level entrance moves content up into place and stops dead (no settle/overshoot) — the "arrival" half of the signal metaphor.
+- **The cursor is the signal** (new): the same dot-then-ring language that describes every reveal now has a literal, continuous presence following the user's own pointer — the metaphor made persistent rather than only appearing at scroll/load moments.
 
 ## Technique ledger
 Everything implemented so far. Check before choosing a technique so repetition is intentional.
@@ -85,6 +115,11 @@ Everything implemented so far. Check before choosing a technique so repetition i
 | 2026-09-11 | Portfólio artwork | B.9 Inner parallax | `src/components/sections/Portfolio.tsx` | Scroll-scrubbed only, no independent loop |
 | 2026-09-11 | Planos feature lists | Tight stagger reveal | `src/components/sections/Pricing.tsx` | |
 | 2026-09-11 | Footer columns | Loose stagger reveal | `src/components/layout/Footer.tsx` | Converted to a client component for this |
+| 2026-09-11 | Global | Inertial scroll (Lenis) | `src/components/ui/SmoothScroll.tsx` | Synced to `gsap.ticker`; off under reduced motion; intercepts `a[href^="#"]` for `lenis.scrollTo` |
+| 2026-09-11 | Global | Custom cursor (E.24) | `src/components/ui/CustomCursor.tsx`, cursor styles in `globals.css` | Dot+ring, `link`/`view` states via `data-cursor`; restores native cursor over form fields |
+| 2026-09-11 | Serviços / Portfólio / Planos cards | 3D pointer-tilt (E.25) | `src/lib/tilt.ts`, called from each section | 6° max, hover-fine + no-preference only |
+| 2026-09-11 | Hero headline | Char-split cascade (A.1 variant, GSAP SplitText) | `src/components/sections/Hero.tsx` | Plain lines only — see "Decisions and lessons" for why the gradient line was kept as a whole-block reveal |
+| 2026-09-11 | Hero backdrop | Pointer repulsion + backdrop parallax | `src/components/canvas/SignalCanvas.tsx`, `Hero.tsx` | Nodes part within ~130px of cursor; whole canvas drifts ±18px toward pointer |
 
 ## 2026-09-11 — "more animation on scroll" pass
 User asked for more motion while scrolling. Added, in order of restraint:
@@ -101,8 +136,13 @@ Ran the skill's audit against `src/`. 0 errors, 0 warnings, 2 info:
 - **Infinite animation** (`Hero.tsx` scroll cue, `repeat:-1`): already compliant — it's created only inside the `(prefers-reduced-motion: no-preference)` matchMedia branch (never runs under reduced motion) and is paused via `ScrollTrigger` `onLeave`/resumed on `onEnterBack` whenever the hero scrolls out of view. No change needed.
 
 ## Decisions and lessons
-- Skipped a full custom cursor: adds input latency risk and breaks on touch; used a contained pointer-glow inside portfolio cards instead, gated to `(hover: hover) and (pointer: fine)`.
-- Skipped Lenis/smooth-scroll: the concept is about precision, not glide — native scroll fits better and avoids syncing overhead with ScrollTrigger.
+- **Superseded 2026-09-11:** the two entries below (skip cursor, skip Lenis) were the calls made at the initial restrained tier. The client asked for a louder tier; both were reconsidered and added — see "2026-09-11 — louder tier" above for the reasoning, not just a reversal. Left here for history:
+  - ~~Skipped a full custom cursor: adds input latency risk and breaks on touch~~ — kept the touch/latency guardrails (hover-fine gate, no-JS-safe default-hidden) but replaced the portfolio-only glow with a site-wide cursor.
+  - ~~Skipped Lenis/smooth-scroll: the concept is about precision, not glide~~ — added with `lerp: 0.1` (a light touch, not heavy glide) and the exact ScrollTrigger-sync recipe from the gsap-scrolltrigger skill so the Process pin doesn't jitter.
+- The portfolio's old pointer-glow (`--spot-x`/`--spot-y` radial gradient) is kept alongside the new cursor "view" state — they read as the same idea at two scales (a small glow inside the card, a bigger dot outside it), not a duplicate effect.
+- Char-splitting the *highlighted* hero line was considered and rejected: `background-clip: text` for the brand gradient is set on that line's own span, and SplitText wrapping each character in its own span would break the gradient (each char span would need its own computed `background-position` slice to keep the gradient continuous — a real, doable technique, but not worth the fragility for one short phrase). The highlighted line keeps its original whole-block mask reveal; only the three plain lines got the char-cascade upgrade.
+- SplitText runs synchronously at mount rather than waiting on `document.fonts.ready` — the char reveal only animates `yPercent`/`autoAlpha` (no per-character width/position measurement), so a fallback-font metrics mismatch at split time isn't visually load-bearing the way it would be for the gradient-slicing technique above. Accepted trade-off; revisit if a FOUT-related glitch is ever actually reported.
+- Caught by the mobile screenshot pass: SplitText's per-character mask boxes measure a hair wider in aggregate than the same text as one run, which pushed "CONSTRUÍMOS" past the line width at 390px and broke it mid-word ("CONSTRUÍM" / "OS") — the exact failure `break-words` exists to catch, just triggered somewhere new. Fixed by only char-splitting at `window.innerWidth >= 640`; narrower viewports keep the whole-line reveal, which was already proven safe. This is why the skill's verification step says to actually look at mobile, not just reason about it.
 - All entrance animations are set up with GSAP `from()`/`autoAlpha` at runtime so content is visible if JS fails to load (no-JS safety). Static Tailwind `opacity-0` was tried first on card grids and removed — it hides content permanently if JS never runs, which violates the no-JS-safety rule.
 - "Como funciona" crossfade initially overlapped for the full scrub unit (both steps readable at once). Fixed by splitting each unit into a 60% hold + 40% crossfade, so adjacent steps never fight for attention mid-scroll.
 - Hero headline at `13vw` clipped the word "CONSTRUÍMOS" on narrow phones (single unbreakable word wider than the masked, overflow-hidden line). Reduced to `10.5vw` with `break-words` as a safety net.

@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { portfolio } from "@/lib/content";
+import { attachTilt } from "@/lib/tilt";
 
 export function Portfolio() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -73,6 +74,7 @@ export function Portfolio() {
 
       // Cursor-reactive spotlight — desktop, fine-pointer only. Never wired on touch.
       const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const cleanups: Array<() => void> = [];
       if (canHover) {
         cards.forEach((card) => {
@@ -84,6 +86,11 @@ export function Portfolio() {
           card.addEventListener("pointermove", onMove);
           cleanups.push(() => card.removeEventListener("pointermove", onMove));
         });
+      }
+
+      // 3D pointer-tilt — the panel catches the signal's light.
+      if (canHover && !reducedMotion) {
+        cards.forEach((card) => cleanups.push(attachTilt(card, 6)));
       }
 
       return () => {
@@ -118,6 +125,8 @@ export function Portfolio() {
             <article
               key={item.id}
               data-case-card
+              data-cursor="view"
+              data-cursor-label="Ver"
               className="group relative overflow-hidden rounded-3xl border border-[var(--color-border)]"
               style={{
                 // spotlight vars, set via pointermove above

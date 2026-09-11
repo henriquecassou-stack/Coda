@@ -6,6 +6,7 @@ import { gsap } from "@/lib/gsap";
 import { dur, gsapEase, shift, stagger } from "@/lib/motion-tokens";
 import { pricing } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
+import { attachTilt } from "@/lib/tilt";
 
 export function Pricing() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -86,7 +87,18 @@ export function Pricing() {
         gsap.set("[data-heading-line] > span", { yPercent: 0 });
       });
 
-      return () => mm.revert();
+      // 3D pointer-tilt — the panel catches the signal's light.
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const tiltCleanups: Array<() => void> = [];
+      if (canHover && !reducedMotion) {
+        cards.forEach((card) => tiltCleanups.push(attachTilt(card, 6)));
+      }
+
+      return () => {
+        mm.revert();
+        tiltCleanups.forEach((fn) => fn());
+      };
     },
     { scope: rootRef },
   );
