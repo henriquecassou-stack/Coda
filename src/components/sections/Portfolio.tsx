@@ -37,12 +37,14 @@ export function Portfolio() {
             scrollTrigger: { trigger: rootRef.current, start: "top 82%", toggleActions: "play none none none" },
           },
         );
+        // Clip-path wipe on scroll-enter — echoes the hover wipe on the
+        // description panel instead of repeating the fade-and-rise used
+        // everywhere else on the page (see MOTION.md technique B.8).
         gsap.fromTo(
           cards,
-          { autoAlpha: 0, y: 32 },
+          { clipPath: "inset(0% 0% 100% 0% round 1.5rem)" },
           {
-            autoAlpha: 1,
-            y: 0,
+            clipPath: "inset(0% 0% 0% 0% round 1.5rem)",
             duration: dur.slow,
             ease: gsapEase.enter,
             stagger: stagger.loose,
@@ -64,7 +66,7 @@ export function Portfolio() {
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set(cards, { autoAlpha: 1, y: 0 });
+        gsap.set(cards, { clipPath: "none" });
         gsap.set("[data-eyebrow]", { autoAlpha: 1, y: 0 });
         gsap.set("[data-heading-line] > span", { yPercent: 0 });
       });

@@ -14,12 +14,14 @@ export function Footer() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Scale instead of the fade-and-rise used elsewhere — the page's
+        // last motion closes on a slightly different note.
         gsap.fromTo(
           "[data-footer-col]",
-          { autoAlpha: 0, y: 20 },
+          { autoAlpha: 0, scale: 0.96 },
           {
             autoAlpha: 1,
-            y: 0,
+            scale: 1,
             duration: dur.slow,
             ease: gsapEase.enter,
             stagger: stagger.loose,
@@ -28,7 +30,7 @@ export function Footer() {
         );
       });
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set("[data-footer-col]", { autoAlpha: 1, y: 0 });
+        gsap.set("[data-footer-col]", { autoAlpha: 1, scale: 1 });
       });
       return () => mm.revert();
     },

@@ -75,7 +75,7 @@ Everything implemented so far. Check before choosing a technique so repetition i
 | 2026-09-11 | Hero backdrop | G-lite Canvas2D network | `src/components/canvas/SignalCanvas.tsx` | Pauses under reduced motion / off-screen |
 | 2026-09-11 | Serviços cards | Contextual slide-in + icon scale-fade | `src/components/sections/Services.tsx` | |
 | 2026-09-11 | Como funciona | C.14 + C.17 Pinned timeline + progress rail | `src/components/sections/Process.tsx` | Pin height capped ~2.4vh |
-| 2026-09-11 | Portfólio cards | B.8 + B.9 wipe + parallax, E.27 cursor glow | `src/components/sections/Portfolio.tsx` | |
+| 2026-09-11 | Portfólio cards | B.8 clip-path wipe (scroll-enter) + B.9 parallax + E.27 cursor glow | `src/components/sections/Portfolio.tsx` | Wipe replaced a fade-and-rise on 2026-09-11 (audit) |
 | 2026-09-11 | Prova social | C.16-lite stacking crossfade | `src/components/sections/Testimonials.tsx` | |
 | 2026-09-11 | Planos | Stagger + FLIP-style highlight | `src/components/sections/Pricing.tsx` | |
 | 2026-09-11 | CTA/Contato | E.23 Magnetic button, H.37 underline draw | `src/components/sections/ContactCTA.tsx` | |
@@ -94,6 +94,11 @@ User asked for more motion while scrolling. Added, in order of restraint:
 4. Stagger reveals on pricing feature lists and footer columns (previously these appeared as inert parts of their parent's fade).
 5. A small nav load-in on first paint.
 Deliberately **not** added: ambient background trace-lines drifting behind Services/Pricing — read as too close to the "blurred gradient blob" anti-pattern for the marginal gain; skipped to keep the density budget (≤1 medium-or-louder animation per viewport) intact.
+
+## 2026-09-11 — audit pass (`scripts/audit-motion.mjs`)
+Ran the skill's audit against `src/`. 0 errors, 0 warnings, 2 info:
+- **Monotony** (15 fade-and-rise entrances across 9 files): eyebrows staying uniform fade+y across sections is intentional (supporting-layer consistency, motion-design.md §4). Reduced actual repetition by switching Portfolio's scroll-enter card reveal to a clip-path wipe (was fade+y, and didn't match its own B.8 documentation) and Footer's column reveal to fade+scale instead of fade+y.
+- **Infinite animation** (`Hero.tsx` scroll cue, `repeat:-1`): already compliant — it's created only inside the `(prefers-reduced-motion: no-preference)` matchMedia branch (never runs under reduced motion) and is paused via `ScrollTrigger` `onLeave`/resumed on `onEnterBack` whenever the hero scrolls out of view. No change needed.
 
 ## Decisions and lessons
 - Skipped a full custom cursor: adds input latency risk and breaks on touch; used a contained pointer-glow inside portfolio cards instead, gated to `(hover: hover) and (pointer: fine)`.
