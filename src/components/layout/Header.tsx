@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -14,7 +14,53 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const burgerRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<HTMLAnchorElement[]>([]);
+
+  /**
+   * The panel covers the whole screen, so while it is open it has to behave
+   * like a dialog: Escape closes it, Tab cycles inside it, and focus goes
+   * back to the button that opened it. Without this a keyboard user tabbed
+   * straight out of the menu into the page underneath — which is covered,
+   * so the focus ring vanished off-screen while they kept tabbing blind.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const panel = menuRef.current;
+    if (!panel) return;
+
+    const focusables = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.offsetParent !== null);
+
+    focusables()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+        burgerRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !panel.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   useGSAP(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -125,11 +171,13 @@ export function Header() {
         </div>
 
         <button
+          ref={burgerRef}
           type="button"
           onClick={() => setOpen((v) => !v)}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] lg:hidden"
           aria-expanded={open}
-          aria-label="Abrir menu"
+          aria-controls="mobile-menu"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
         >
           <span className="relative block h-3 w-4">
             <span
@@ -144,6 +192,10 @@ export function Header() {
 
       <div
         ref={menuRef}
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navegação"
         className="fixed inset-x-0 top-[73px] bottom-0 hidden flex-col justify-center overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 lg:hidden"
         style={{ clipPath: "inset(0% 0% 100% 0%)" }}
       >

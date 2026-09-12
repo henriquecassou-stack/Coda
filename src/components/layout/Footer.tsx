@@ -55,9 +55,9 @@ export function Footer() {
 
           {footer.columns.map((col) => (
             <div key={col.title} data-footer-col>
-              <h4 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
+              <h2 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
                 {col.title}
-              </h4>
+              </h2>
               <ul className="mt-4 space-y-3">
                 {col.links.map((link) => (
                   <li key={link.href}>
@@ -74,9 +74,9 @@ export function Footer() {
           ))}
 
           <div data-footer-col>
-            <h4 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
+            <h2 className="text-xs font-semibold tracking-[0.14em] text-[var(--color-fg-faint)] uppercase">
               Contato
-            </h4>
+            </h2>
             <ul className="mt-4 space-y-3">
               <li>
                 <a

@@ -162,16 +162,24 @@ export function Hero() {
           {hero.eyebrow}
         </p>
 
+        {/* SplitText shatters each line into per-character spans and tags the
+            wrapper with aria-label to compensate — but aria-label is invalid
+            on a plain span, so assistive tech got a malformed node instead of
+            the headline. The readable copy lives in the sr-only span; every
+            element the animation touches is hidden from AT. */}
         <h1 className="max-w-4xl break-words font-[var(--font-display)] text-[10.5vw] leading-[0.98] font-bold tracking-tight text-white sm:text-[7.5vw] lg:text-[5.2rem]">
-          {hero.headlineLines.map((line) => (
-            <span key={line} data-hero="line" className="block overflow-hidden">
-              <span
-                className={`block ${line === hero.highlightWord ? "text-gradient" : ""}`}
-              >
-                {line}
+          <span className="sr-only">{hero.headlineLines.join(" ")}</span>
+          <span aria-hidden="true">
+            {hero.headlineLines.map((line) => (
+              <span key={line} data-hero="line" className="block overflow-hidden">
+                <span
+                  className={`block ${line === hero.highlightWord ? "text-gradient" : ""}`}
+                >
+                  {line}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </span>
         </h1>
 
         <p

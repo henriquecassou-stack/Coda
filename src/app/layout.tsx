@@ -7,6 +7,8 @@ import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { StructuredData } from "@/components/StructuredData";
+import { siteUrl } from "@/lib/site";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -26,11 +28,6 @@ const inter = Inter({
 const title = "CODA — Websites + Automações";
 const description =
   "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.";
-
-// Absolute URLs for og:image/canonical are built from this. Set
-// NEXT_PUBLIC_SITE_URL to the real domain when the site goes live — the
-// fallback only keeps local builds and previews working.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://coda.studio";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -61,12 +58,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${spaceGrotesk.variable} ${inter.variable} h-full`}>
       <body className="min-h-full bg-[var(--color-bg)] antialiased">
+        {/* Off-screen until focused. The first Tab on the page used to land on
+            the logo, so a keyboard user walked the entire nav before reaching
+            any content. */}
+        <a
+          href="#conteudo"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-black"
+        >
+          Pular para o conteúdo
+        </a>
+        <StructuredData />
         <Preloader />
         <ScrollProgress />
         <SmoothScroll />
         <CustomCursor />
         <Header />
-        <main>{children}</main>
+        <main id="conteudo">{children}</main>
         <Footer />
       </body>
     </html>

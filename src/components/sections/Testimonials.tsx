@@ -137,15 +137,20 @@ export function Testimonials() {
                 onClick={() => setIndex(i)}
                 aria-label={`Ver depoimento ${i + 1}`}
                 aria-current={i === index}
-                className="h-1.5 w-6 overflow-hidden rounded-full bg-white/15"
+                // The visible bar is 24x6 — a miserable tap target on a phone,
+                // and under the 24x24 WCAG 2.2 minimum. The button is now the
+                // full 24x24; the bar is just what you see inside it.
+                className="flex h-6 w-6 items-center justify-center"
               >
-                <span
-                  className="block h-full rounded-full transition-[width] duration-300"
-                  style={{
-                    width: i === index ? "100%" : "0%",
-                    background: "var(--gradient-brand)",
-                  }}
-                />
+                <span className="block h-1.5 w-6 overflow-hidden rounded-full bg-white/15">
+                  <span
+                    className="block h-full rounded-full transition-[width] duration-300"
+                    style={{
+                      width: i === index ? "100%" : "0%",
+                      background: "var(--gradient-brand)",
+                    }}
+                  />
+                </span>
               </button>
             ))}
           </div>

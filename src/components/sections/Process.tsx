@@ -160,7 +160,12 @@ export function Process() {
                   className="absolute inset-0 grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto]"
                 >
                   <div>
-                    <span className="text-gradient font-[var(--font-display)] text-sm font-bold tracking-[0.2em]">
+                    {/* Solid cyan, not the brand gradient: at 14px the whole
+                        gradient is compressed onto two characters, and its
+                        blue midpoint only reaches 3.88:1 on this surface —
+                        under the 4.5:1 WCAG minimum for text this size. Cyan
+                        is the gradient's own first stop and clears 10.9:1. */}
+                    <span className="font-[var(--font-display)] text-sm font-bold tracking-[0.2em] text-[var(--color-cyan)]">
                       {step.number}
                     </span>
                     <h3 className="mt-4 font-[var(--font-display)] text-3xl font-bold tracking-tight text-white sm:text-4xl">

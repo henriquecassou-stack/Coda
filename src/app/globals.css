@@ -125,6 +125,15 @@ body {
   outline-offset: 3px;
 }
 
+/* A nav link hands focus to its target section, which needs a temporary
+   tabindex to accept it (see SmoothScroll). The scroll itself is the visible
+   feedback — a cyan outline drawn around an entire full-height section reads
+   as a rendering bug, and the next Tab shows a real focus ring anyway. */
+[tabindex="-1"]:focus,
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
 /* ---------- Custom cursor (desktop, fine-pointer only, off under reduced motion) ----------
    Hidden by default (no-JS-safe: the native cursor is the correct fallback).
    src/components/ui/CustomCursor.tsx toggles `has-custom-cursor` on <html> only

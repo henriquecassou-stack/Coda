@@ -135,10 +135,11 @@ export function Pricing() {
               }`}
             >
               {plan.recommended && (
-                <span
-                  className="absolute -top-3 left-8 rounded-full px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-black uppercase"
-                  style={{ background: "var(--gradient-brand)" }}
-                >
+                // Solid cyan rather than the brand gradient: the gradient runs
+                // from a very light cyan to a mid blue, so at 10px neither dark
+                // nor light text clears 4.5:1 across all of it (black bottomed
+                // out at 4.17:1 on the blue). Dark-on-cyan is 11.4:1.
+                <span className="absolute -top-3 left-8 rounded-full bg-[var(--color-cyan)] px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-black uppercase">
                   Recomendado
                 </span>
               )}

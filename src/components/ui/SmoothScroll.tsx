@@ -35,10 +35,21 @@ export function SmoothScroll() {
       if (!link) return;
       const id = link.getAttribute("href");
       if (!id || id.length < 2) return;
-      const target = document.querySelector(id);
+      const target = document.querySelector<HTMLElement>(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target as HTMLElement, { offset: -88, duration: 1.2 });
+      lenis.scrollTo(target, { offset: -88, duration: 1.2 });
+
+      // preventDefault() also cancels the focus move a fragment jump normally
+      // does. Without this a keyboard user activated "Serviços", watched the
+      // page scroll, then kept tabbing through the nav — focus never followed
+      // them into the section. Sections aren't focusable, hence the temporary
+      // tabindex, removed again on blur so the DOM doesn't accumulate them.
+      if (!target.hasAttribute("tabindex")) {
+        target.setAttribute("tabindex", "-1");
+        target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
+      }
+      target.focus({ preventScroll: true });
     }
     document.addEventListener("click", onAnchorClick);
 
