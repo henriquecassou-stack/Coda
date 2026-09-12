@@ -106,8 +106,11 @@ export function Testimonials() {
           </span>
         </h2>
 
-        <div className="relative min-h-[220px]">
-          <div ref={cardRef}>
+        {/* The box keeps the height of the longest quote so swapping never
+            shifts the layout; centering means a short quote splits that slack
+            evenly instead of leaving a hole above the controls. */}
+        <div className="relative flex min-h-[200px] items-center justify-center">
+          <div ref={cardRef} className="w-full">
             <p className="text-balance font-[var(--font-display)] text-xl leading-snug font-medium text-white sm:text-2xl">
               &ldquo;{current.quote}&rdquo;
             </p>
@@ -116,7 +119,7 @@ export function Testimonials() {
           </div>
         </div>
 
-        <div className="mt-12 flex items-center justify-center gap-4">
+        <div className="mt-10 flex items-center justify-center gap-4">
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}

@@ -4,9 +4,15 @@ import { useRef, useState, type FormEvent } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { dur, gsapEase } from "@/lib/motion-tokens";
-import { contact } from "@/lib/content";
+import { brand, contact } from "@/lib/content";
 
 type Status = "idle" | "sending" | "sent" | "error";
+
+// Reuses the WhatsApp link already defined in brand.social so there's one
+// source of truth; falls back to a tel: link if that entry is ever removed.
+const whatsappHref =
+  brand.social.find((s) => s.label.toLowerCase() === "whatsapp")?.href ??
+  `tel:${brand.phone.replace(/[^\d+]/g, "")}`;
 
 export function ContactCTA() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -139,7 +145,7 @@ export function ContactCTA() {
       </svg>
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-16 px-6 sm:px-10 lg:grid-cols-[1fr_1fr]">
-        <div>
+        <div className="flex flex-col">
           <p data-contact-reveal className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">
             {contact.eyebrow}
           </p>
@@ -154,6 +160,33 @@ export function ContactCTA() {
           <p data-contact-reveal className="mt-6 max-w-sm text-base leading-relaxed text-[var(--color-fg-muted)]">
             {contact.sub}
           </p>
+
+          {/* Direct channels — some people would rather write than fill a form,
+              and this keeps the left column from running out of content
+              halfway down a tall form. */}
+          <dl
+            data-contact-reveal
+            className="mt-12 max-w-sm divide-y divide-[var(--color-border)] border-t border-[var(--color-border)] lg:mt-auto"
+          >
+            {[
+              { label: "E-mail", value: brand.email, href: `mailto:${brand.email}` },
+              { label: "WhatsApp", value: brand.phone, href: whatsappHref },
+            ].map((channel) => (
+              <div key={channel.label} className="flex items-baseline justify-between gap-6 py-5">
+                <dt className="text-xs font-semibold tracking-[0.18em] text-[var(--color-fg-faint)] uppercase">
+                  {channel.label}
+                </dt>
+                <dd>
+                  <a
+                    href={channel.href}
+                    className="text-base text-white transition-colors duration-[var(--dur-fast)] hover:text-[var(--color-cyan)]"
+                  >
+                    {channel.value}
+                  </a>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
         <form

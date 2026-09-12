@@ -146,7 +146,10 @@ export function Process() {
               </div>
             </div>
 
-            {/* Active step */}
+            {/* Active step. On wide screens the step's own numeral is set
+                oversized on the right — the same big-display-type device used
+                in the hero and the editorial break — so the pinned frame reads
+                as a composed spread instead of a narrow column in empty space. */}
             <div className="relative min-h-[220px] sm:min-h-[240px]">
               {process.map((step, i) => (
                 <div
@@ -154,17 +157,26 @@ export function Process() {
                   ref={(el) => {
                     if (el) stepRefs.current[i] = el;
                   }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto]"
                 >
-                  <span className="text-gradient font-[var(--font-display)] text-sm font-bold tracking-[0.2em]">
+                  <div>
+                    <span className="text-gradient font-[var(--font-display)] text-sm font-bold tracking-[0.2em]">
+                      {step.number}
+                    </span>
+                    <h3 className="mt-4 font-[var(--font-display)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                      {step.title}
+                    </h3>
+                    <p className="mt-5 max-w-md text-base leading-relaxed text-[var(--color-fg-muted)]">
+                      {step.description}
+                    </p>
+                  </div>
+
+                  <span
+                    aria-hidden
+                    className="text-gradient hidden font-[var(--font-display)] text-[10rem] leading-[0.8] font-bold tracking-tight opacity-25 lg:block xl:text-[13rem]"
+                  >
                     {step.number}
                   </span>
-                  <h3 className="mt-4 font-[var(--font-display)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    {step.title}
-                  </h3>
-                  <p className="mt-5 max-w-md text-base leading-relaxed text-[var(--color-fg-muted)]">
-                    {step.description}
-                  </p>
                 </div>
               ))}
             </div>
