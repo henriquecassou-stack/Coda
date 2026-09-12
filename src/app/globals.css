@@ -72,6 +72,11 @@
 html {
   background: var(--color-bg);
   color-scheme: dark;
+  /* The header is fixed (69px tall on desktop, 73px below lg), so a native
+     anchor jump — reduced motion, or a click before the smooth-scroll script
+     is running — would land with the section's top tucked under it. Lenis
+     applies its own offset while it is active; this covers every other case. */
+  scroll-padding-top: 5.5rem;
 }
 
 body {

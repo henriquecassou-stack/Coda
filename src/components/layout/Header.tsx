@@ -85,7 +85,15 @@ export function Header() {
     <header
       ref={headerRef}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-[var(--dur-base)] ${
-        scrolled ? "bg-[var(--color-bg)]/85 backdrop-blur-md border-b border-[var(--color-border)]" : "bg-transparent"
+        scrolled
+          ? // Strong enough that the page can't be read through it: the hero
+            // headline is ~80px tall, and blur-md at 85% left it legible
+            // behind the logo and the nav links (measured: the glyphs peaked
+            // at rgb(26,26,28) over an rgb(8,8,11) bar). blur-xl at 95% takes
+            // that to rgb(13,13,15) over rgb(7,7,9) — no longer readable as
+            // text, while the bar still reads as glass rather than a slab.
+            "border-b border-[var(--color-border)] bg-[var(--color-bg)]/95 backdrop-blur-xl backdrop-saturate-150"
+          : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-10">
