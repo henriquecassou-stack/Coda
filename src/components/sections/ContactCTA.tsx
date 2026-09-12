@@ -115,7 +115,7 @@ export function ContactCTA() {
   }
 
   return (
-    <section id="contato" ref={sectionRef} className="relative overflow-hidden bg-[var(--color-bg)] py-28 sm:py-36">
+    <section id="contato" ref={sectionRef} className="relative overflow-hidden bg-[var(--color-bg)] py-20 sm:py-28">
       <svg
         className="pointer-events-none absolute -top-10 left-0 h-40 w-full opacity-70"
         viewBox="0 0 1200 160"

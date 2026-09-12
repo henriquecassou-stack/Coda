@@ -102,7 +102,7 @@ export function Portfolio() {
   );
 
   return (
-    <section id="portfolio" ref={rootRef} className="relative bg-[var(--color-bg)] py-28 sm:py-36">
+    <section id="portfolio" ref={rootRef} className="relative bg-[var(--color-bg)] py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p

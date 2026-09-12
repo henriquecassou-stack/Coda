@@ -9,9 +9,15 @@ import type { NextConfig } from "next";
  * scripts it doesn't nonce in this setup — real risk stays low since there
  * is no injection point for attacker-controlled markup to land in the DOM.
  */
+// Dev-mode React uses eval() for debugging features (better stack traces,
+// component-stack reconstruction) — never in production, per React's own
+// console warning. 'unsafe-eval' is added only outside production so the
+// dev-server overlay doesn't flag it, without loosening the real CSP.
+const isDev = process.env.NODE_ENV !== "production";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
