@@ -155,6 +155,21 @@ export const capabilities: {
   ],
 };
 
+/**
+ * PROPOSTA — conteúdo da seção "Calculadora" (ainda não aprovada).
+ *
+ * Nada aqui é um resultado da CODA: a seção só faz aritmética com os números
+ * que o próprio visitante informa. Se a seção for aprovada, este bloco fica;
+ * se não, apague-o junto com o componente.
+ */
+export const calculator = {
+  eyebrow: "CONTA RÁPIDA",
+  headline: "QUANTO O TRABALHO MANUAL",
+  headlineGradient: "JÁ CUSTA PARA VOCÊ.",
+  sub: "Não temos como saber quanto a sua empresa economiza antes de olhar o processo. Mas dá para calcular, agora, quanto o trabalho repetitivo custa hoje — com os seus números, e com a conta à vista.",
+  cta: "Quero um diagnóstico",
+};
+
 // Full-bleed editorial statement — a deliberate rhythm-breaker between the
 // proof-heavy Portfolio and Prova social sections (see MOTION.md).
 export const manifesto = {

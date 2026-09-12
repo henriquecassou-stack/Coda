@@ -249,3 +249,70 @@ html.has-custom-cursor .cursor-layer {
   /* Portfolio cursor-glow and hover-only affordances are already gated by
      (hover: hover) and (pointer: fine) in component code. */
 }
+
+/* ==========================================================================
+   Range sliders (seção Calculadora)
+   Browsers give <input type="range"> an OS-native look that ignores the whole
+   palette, so the track and thumb are drawn by hand. Both vendor branches are
+   needed: -webkit- and -moz- do not accept a shared selector list — one
+   unknown pseudo-element invalidates the entire rule.
+   ========================================================================== */
+.calc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+.calc-range:focus {
+  outline: none;
+}
+.calc-range:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.calc-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.calc-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+/* Firefox paints the filled portion for free; WebKit has no equivalent, so
+   the thumb alone carries the brand there. */
+.calc-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gradient-brand);
+}
+
+.calc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -9px;
+  border: 2px solid var(--color-bg);
+  border-radius: 999px;
+  background: var(--gradient-brand);
+  transition: transform var(--dur-fast) var(--ease-enter);
+}
+.calc-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--color-bg);
+  border-radius: 999px;
+  background: var(--color-cyan);
+  transition: transform var(--dur-fast) var(--ease-enter);
+}
+.calc-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.calc-range:active::-moz-range-thumb {
+  transform: scale(1.15);
+}

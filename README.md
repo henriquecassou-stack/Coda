@@ -47,6 +47,18 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 Para os prints dos cases: peça autorização ao cliente e borre dados pessoais (nomes, telefones,
 e-mails, valores) que apareçam nas telas.
 
+## Seção "Calculadora" — proposta, não aprovada
+
+A seção **Conta rápida / Calculadora** (`src/components/sections/Calculator.tsx`) foi adicionada
+como proposta. Ela não afirma nenhum resultado da CODA: faz aritmética com os números que o próprio
+visitante informa nos sliders, e mostra a conta inteira embaixo do resultado. A porcentagem
+"automatizável" é uma estimativa que o visitante controla — não uma promessa nossa.
+
+Para remover, se não quiser: `git revert` do commit que a criou, ou à mão — apague
+`src/components/sections/Calculator.tsx`, a linha `<Calculator />` e seu import em
+`src/app/page.tsx`, o bloco `calculator` em `src/lib/content.ts` e o bloco `.calc-range` no final de
+`src/app/globals.css`.
+
 ## Como editar sem mexer nas animações
 
 O projeto separa **conteúdo**, **estilo** e **animação** em lugares diferentes de propósito —

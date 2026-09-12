@@ -166,3 +166,19 @@ Ran the skill's audit against `src/`. 0 errors, 0 warnings, 2 info:
 - Hero headline at `13vw` clipped the word "CONSTRUÍMOS" on narrow phones (single unbreakable word wider than the masked, overflow-hidden line). Reduced to `10.5vw` with `break-words` as a safety net.
 - Mobile nav was a short dropdown with a solid background, but the header itself is `position: fixed`, so it never pushed page content down — the hero showed through below the panel. Changed to a full-viewport fixed overlay with body-scroll lock while open.
 - **Found during a full-site health check (2026-09-11), not the original build:** Portfolio's and Pricing's `[data-eyebrow]` / `[data-heading-line] > span` reveals never fired — `useGSAP({ scope: rootRef })` auto-scopes selector-text queries to `rootRef.current`'s subtree, but `rootRef` was attached to the inner cards grid in both files while the eyebrow/heading sat in a sibling div above it, outside that subtree. GSAP logged "target not found" and silently skipped the tween (no-JS-safety meant the text was just always visible, not broken-looking, which is exactly why it went unnoticed by eye). Fixed by moving `ref={rootRef}` to the outer `<section>`, matching Services/Capabilities. Caught only by actually reading the browser console during a Playwright pass, not by screenshots — a reminder that a silently-skipped animation looks identical to a successful one in a static screenshot.
+
+## 2026-09-12 — proposta: seção Calculadora
+
+A seção `Calculator` entra com a coreografia já estabelecida, sem inventar um efeito novo:
+título com o mesmo reveal mascarado das outras seções, e os dois painéis subindo com
+`autoAlpha + y` em stagger — o mesmo "resolve e trava" do resto da página, na variante
+mais calma, porque a seção é de leitura e não de impacto.
+
+Os números **não** usam contador animado como em Capacidades. Ali o contador marca a chegada
+de um dado fixo; aqui o número muda a cada movimento do slider, e um tween a cada `input`
+brigaria com o arraste — o valor acompanha o dedo em tempo real, que é a resposta correta
+para um controle direto. É a mesma regra de sempre: a animação serve à leitura, não o contrário.
+
+Os sliders são desenhados à mão em `globals.css` (`.calc-range`) porque o controle nativo
+ignora a paleta inteira. `-webkit-` e `-moz-` precisam de regras separadas: um pseudo-elemento
+desconhecido invalida a regra toda no outro motor.
