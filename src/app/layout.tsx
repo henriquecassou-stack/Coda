@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -23,10 +23,38 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
+const title = "CODA — Websites + Automações";
+const description =
+  "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.";
+
+// Absolute URLs for og:image/canonical are built from this. Set
+// NEXT_PUBLIC_SITE_URL to the real domain when the site goes live — the
+// fallback only keeps local builds and previews working.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://coda.studio";
+
 export const metadata: Metadata = {
-  title: "CODA — Websites + Automações",
-  description:
-    "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: "/",
+    siteName: "CODA",
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050507",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

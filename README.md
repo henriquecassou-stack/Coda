@@ -11,6 +11,16 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+### Antes de publicar: domínio
+
+Defina `NEXT_PUBLIC_SITE_URL` com o domínio real (ex.: `https://coda.com.br`) no ambiente de deploy.
+Ele é usado para montar as URLs absolutas do `canonical` e da imagem de compartilhamento
+(`og:image`) em `src/app/layout.tsx`. Sem isso vale o fallback `https://coda.studio`, e as prévias no
+WhatsApp/LinkedIn vão apontar para o domínio errado.
+
+A imagem de compartilhamento é gerada por código em **`src/app/opengraph-image.tsx`** — edite o texto
+ali (usa as cores e o logo da marca automaticamente); não há PNG para exportar à mão.
+
 Outros comandos:
 
 ```bash
