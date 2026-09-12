@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
@@ -135,15 +136,34 @@ export function Portfolio() {
               }}
             >
               <div className="relative flex aspect-[4/3] flex-col justify-end overflow-hidden p-7 transition-transform duration-700 ease-[var(--ease-move)] group-hover:scale-[1.04] sm:p-9">
-                {/* parallax layer — oversized so the scroll-linked drift never exposes an edge */}
-                <div
-                  data-parallax-bg
-                  aria-hidden
-                  className="absolute inset-x-0 -top-[12%] -bottom-[12%]"
-                  style={{
-                    background: `linear-gradient(135deg, ${item.gradientFrom}, ${item.gradientTo})`,
-                  }}
-                />
+                {/* parallax layer — oversized so the scroll-linked drift never
+                    exposes an edge. Uses the real screenshot when the case has
+                    one, and the brand gradient as the fallback. */}
+                <div data-parallax-bg aria-hidden={!item.image} className="absolute inset-x-0 -top-[12%] -bottom-[12%]">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.imageAlt ?? `${item.title} — ${item.segment}`}
+                      fill
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: `linear-gradient(135deg, ${item.gradientFrom}, ${item.gradientTo})` }}
+                    />
+                  )}
+                </div>
+
+                {/* Legibility scrim — only needed over a photo, where the tag
+                    would otherwise sit on unpredictable pixels. */}
+                {item.image && (
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+                  />
+                )}
                 {/* texture */}
                 <div
                   aria-hidden

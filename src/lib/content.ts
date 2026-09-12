@@ -71,8 +71,24 @@ export const services = [
   },
 ] as const;
 
-// Bento-grid capability/outcome cards — asymmetric sizes are intentional
-// (see MOTION.md "2026-09-11 — layout inspiration pass").
+/**
+ * Bento-grid capability cards — asymmetric sizes are intentional
+ * (see MOTION.md "2026-09-11 — layout inspiration pass").
+ *
+ * ⚠️ ATENÇÃO — os números abaixo são ILUSTRATIVOS, não são resultados medidos
+ * da CODA. Publicá-los como fato é propaganda enganosa e é a primeira coisa
+ * que um cliente questiona numa reunião. Antes de publicar, escolha um
+ * caminho para cada célula com número:
+ *
+ *   1. Troque pelo número real (o ideal) e diga a origem no `label`, ex.:
+ *      "menos tempo em tarefas manuais — média de 6 clientes em 2026".
+ *   2. Se ainda não há medição, reescreva como capacidade em vez de
+ *      resultado — é o que a célula `atendimento` já faz ("24/7" + o que o
+ *      serviço entrega), verdadeiro sem depender de número medido.
+ *
+ * As células `atendimento` e `integracoes` já seguem o caminho 2 e podem ir
+ * ao ar como estão. As três com número (`tempo`, `leads`, `prazo`) não.
+ */
 export type CapabilityCell =
   | {
       id: string;
@@ -170,8 +186,28 @@ export const process = [
   },
 ] as const;
 
-// Illustrative cases — replace with real projects and screenshots.
-export const portfolio = [
+/**
+ * Cases. To use a real project screenshot, drop the file in
+ * `public/images/cases/` and set `image` (e.g. "/images/cases/clinica.jpg")
+ * plus `imageAlt`. Without `image`, the card falls back to the brand
+ * gradient defined by `gradientFrom`/`gradientTo`.
+ *
+ * ⚠️ The entries below are ILLUSTRATIVE placeholders, not real CODA work.
+ * Replace them with actual projects before publishing.
+ */
+export type PortfolioItem = {
+  id: string;
+  category: string;
+  title: string;
+  segment: string;
+  description: string;
+  gradientFrom: string;
+  gradientTo: string;
+  image?: string;
+  imageAlt?: string;
+};
+
+export const portfolio: PortfolioItem[] = [
   {
     id: "case-1",
     category: "Automação",
@@ -208,7 +244,7 @@ export const portfolio = [
     gradientFrom: "#2dd4f0",
     gradientTo: "#8b5cf6",
   },
-] as const;
+];
 
 // Illustrative testimonials — replace with real client quotes.
 export const testimonials = [
