@@ -96,7 +96,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-9 md:flex">
+        <nav className="hidden items-center gap-9 lg:flex">
           {nav.map((item) => (
             <a
               key={item.href}
@@ -110,7 +110,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div data-nav-item className="hidden md:block">
+        <div data-nav-item className="hidden lg:block">
           <Button href="#contato" className="!px-5 !py-2.5 !text-xs">
             Começar projeto
           </Button>
@@ -119,7 +119,7 @@ export function Header() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] lg:hidden"
           aria-expanded={open}
           aria-label="Abrir menu"
         >
@@ -136,26 +136,30 @@ export function Header() {
 
       <div
         ref={menuRef}
-        className="fixed inset-x-0 top-[73px] bottom-0 hidden flex-col justify-center gap-1 overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 md:hidden"
+        className="fixed inset-x-0 top-[73px] bottom-0 hidden flex-col justify-center overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 lg:hidden"
         style={{ clipPath: "inset(0% 0% 100% 0%)" }}
       >
-        {nav.map((item, i) => (
-          <a
-            key={item.href}
-            ref={(el) => {
-              if (el) linksRef.current[i] = el;
-            }}
-            href={item.href}
-            onClick={() => setOpen(false)}
-            className="border-b border-[var(--color-border)] py-5 text-2xl font-semibold tracking-[0.02em] text-white uppercase"
-          >
-            {item.label}
-          </a>
-        ))}
-        <div className="pt-8">
-          <Button href="#contato" className="w-full" onClick={() => setOpen(false)}>
-            Começar projeto
-          </Button>
+        {/* Capped width so the links and CTA don't stretch across a tablet;
+            this panel now covers everything below lg, not just phones. */}
+        <div className="mx-auto flex w-full max-w-xl flex-col gap-1">
+          {nav.map((item, i) => (
+            <a
+              key={item.href}
+              ref={(el) => {
+                if (el) linksRef.current[i] = el;
+              }}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="border-b border-[var(--color-border)] py-5 text-2xl font-semibold tracking-[0.02em] text-white uppercase"
+            >
+              {item.label}
+            </a>
+          ))}
+          <div className="pt-8">
+            <Button href="#contato" className="w-full" onClick={() => setOpen(false)}>
+              Começar projeto
+            </Button>
+          </div>
         </div>
       </div>
     </header>
