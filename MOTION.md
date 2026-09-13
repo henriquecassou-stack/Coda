@@ -214,3 +214,53 @@ Escolhas que valem registro:
 - **Movimento reduzido** mostra o estado final e tira as duas legendas do
   empilhamento absoluto — sem isso elas imprimem uma por cima da outra, porque
   o empilhamento só existe para o crossfade do scrub.
+
+## 2026-09-13 — passe de performance (medido, não adivinhado)
+
+O site engasgava ao rolar. O perfil mostrou duas causas, e só duas: **portfólio**
+(26% de quadros perdidos) e **hero** (23%). Todo o resto ficava em 2% ou menos.
+
+**Portfólio — `mix-blend-mode: overlay` na textura.** A mesclagem obriga o
+compositor a guardar o fundo e re-rasterizar a pilha inteira do card a cada
+quadro; com a camada de parallax se movendo embaixo, isso acontecia sempre.
+Isolado por A/B: sem a mesclagem, 23% → 6%; sem a camada inteira, 2%. O
+parallax e o spotlight não tinham efeito nenhum (23% e 26%, dentro do ruído).
+A textura ficou sem mesclagem, com a opacidade reajustada de .18 para .12 para
+compensar o contraste que a mesclagem dava.
+
+**Hero — o custo é o envio da textura do canvas, não o desenho.** Três
+medições que apontam para isso:
+
+- Estrangular a CPU em 4x **não muda nada** (30ms por quadro com e sem) — logo
+  não é JS.
+- Buffer de 1080x675 e de 1440x900 medem **igual** — logo não é quantidade de
+  pixel.
+- Canvas **na tela mas sem redesenhar**: 16,7ms. Redesenhando: 30ms.
+
+Ou seja: o que custa é redesenhar, uma vez por quadro, independente do tamanho.
+Daí o teto de 30fps (`DRAW_INTERVAL_MS`) com o passo da física escalado pelo
+tempo decorrido — num grafo ambiente à deriva é indistinguível de 60fps a olho
+nu e devolve metade do orçamento. Junto foram embora três custos gratuitos:
+`shadowBlur` (um passe de desfoque por pulso, cinco por quadro) virou sprite de
+gradiente desenhado uma vez; as ~60 chamadas de `stroke` viraram 4, agrupadas
+por faixa de opacidade **numa passada só** pelos 325 pares (a primeira versão
+rodava o laço O(n²) uma vez por faixa e ficou *mais lenta* — 23% → 36%, revertido);
+e o DPR foi limitado a 1.5.
+
+**Resultado na rolagem da página inteira, a 4x de CPU:**
+
+| | antes | depois |
+|---|---|---|
+| quadro p50 | 20,3ms | 18,5ms |
+| quadro p90 | 36,0ms | 30,0ms |
+| quadro p99 | 61,3ms | 47,0ms |
+| quadros > 32ms | 72 de 454 (16%) | ~29 (6,5%) |
+| long tasks | 7 (maior 72ms) | 0-2 (maior 55ms) |
+
+No celular (390px, 6x de CPU) a rolagem inteira fica em p50 18,3ms e 8% de
+quadros perdidos.
+
+**Regra que fica:** antes de otimizar animação aqui, meça por seção. As duas
+causas reais não eram as suspeitas óbvias (parallax com scrub, tilt 3D, Lenis,
+quantidade de ScrollTriggers) — eram uma propriedade de CSS e a frequência de
+redesenho de um canvas.
