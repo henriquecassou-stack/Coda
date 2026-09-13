@@ -94,6 +94,16 @@ export function Footer() {
                   {brand.phone}
                 </a>
               </li>
+              <li>
+                <a
+                  href={`https://instagram.com/${brand.instagramHandle}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:text-white"
+                >
+                  @{brand.instagramHandle}
+                </a>
+              </li>
             </ul>
           </div>
         </div>
