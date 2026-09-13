@@ -259,7 +259,7 @@ export function FlowShift() {
   );
 
   return (
-    <section id="fluxo" ref={rootRef} className="relative overflow-hidden bg-[var(--color-bg)] py-20 sm:py-28">
+    <section id="fluxo" ref={rootRef} className="relative overflow-hidden py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-14 max-w-2xl">
           <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">

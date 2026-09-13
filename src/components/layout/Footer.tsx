@@ -39,7 +39,7 @@ export function Footer() {
   );
 
   return (
-    <footer ref={rootRef} className="border-t border-[var(--color-border)] bg-[var(--color-bg)]">
+    <footer ref={rootRef} className="border-t border-[var(--color-border)]">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div data-footer-col>

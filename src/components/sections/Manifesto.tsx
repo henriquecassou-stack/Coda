@@ -46,7 +46,7 @@ export function Manifesto() {
   );
 
   return (
-    <section ref={rootRef} className="relative overflow-hidden bg-[var(--color-bg)] py-24 sm:py-32">
+    <section ref={rootRef} className="relative overflow-hidden py-24 sm:py-32">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"

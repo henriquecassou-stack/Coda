@@ -7,6 +7,7 @@ import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { PageSignal } from "@/components/canvas/PageSignal";
 import { StructuredData } from "@/components/StructuredData";
 import { siteUrl } from "@/lib/site";
 
@@ -57,7 +58,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${spaceGrotesk.variable} ${inter.variable} h-full`}>
-      <body className="min-h-full bg-[var(--color-bg)] antialiased">
+      <body className="min-h-full antialiased">
         {/* Off-screen until focused. The first Tab on the page used to land on
             the logo, so a keyboard user walked the entire nav before reaching
             any content. */}
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Pular para o conteúdo
         </a>
         <StructuredData />
+        <PageSignal />
         <Preloader />
         <ScrollProgress />
         <SmoothScroll />

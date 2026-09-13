@@ -112,7 +112,7 @@ export function Portfolio() {
     <section
       id="portfolio"
       ref={rootRef}
-      className="relative bg-[var(--color-bg)] pt-8 pb-20 sm:pt-12 sm:pb-28"
+      className="relative pt-8 pb-20 sm:pt-12 sm:pb-28"
     >
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">

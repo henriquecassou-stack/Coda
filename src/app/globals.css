@@ -80,7 +80,10 @@ html {
 }
 
 body {
-  background: var(--color-bg);
+  /* Sem background aqui de propósito — o `html` já pinta a cor. Na ordem de
+     pintura do CSS, o fundo de um elemento em fluxo (o body) vem DEPOIS dos
+     descendentes com z-index negativo, então um body opaco cobria a camada
+     de animação do PageSignal (-z-10) por completo. */
   color: var(--color-fg);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;

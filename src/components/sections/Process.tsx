@@ -110,7 +110,7 @@ export function Process() {
   );
 
   return (
-    <section id="como-funciona" ref={sectionRef} className="relative bg-[var(--color-bg-elevated)]">
+    <section id="como-funciona" ref={sectionRef} className="relative">
       <div className="relative flex min-h-[100svh] items-center overflow-hidden">
         <div className="mx-auto w-full max-w-7xl px-6 sm:px-10">
           <p

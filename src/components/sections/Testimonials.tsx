@@ -90,7 +90,7 @@ export function Testimonials() {
   const current = testimonials[index];
 
   return (
-    <section ref={sectionRef} className="relative bg-[var(--color-bg-elevated)] py-20 sm:py-28">
+    <section ref={sectionRef} className="relative py-20 sm:py-28">
       <div className="mx-auto max-w-4xl px-6 text-center sm:px-10">
         <p
           data-eyebrow

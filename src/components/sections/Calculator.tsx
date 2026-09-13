@@ -138,7 +138,7 @@ export function Calculator() {
   );
 
   return (
-    <section id="calculadora" ref={rootRef} className="relative bg-[var(--color-bg-elevated)] py-20 sm:py-28">
+    <section id="calculadora" ref={rootRef} className="relative py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p className="mb-4 text-xs font-semibold tracking-[0.22em] text-[var(--color-fg-muted)] uppercase">

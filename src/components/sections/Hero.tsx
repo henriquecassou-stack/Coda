@@ -6,7 +6,6 @@ import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { hero } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
-import { SignalCanvas } from "@/components/canvas/SignalCanvas";
 
 export function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -65,12 +64,6 @@ export function Hero() {
             { autoAlpha: 0 },
             { autoAlpha: 1, duration: dur.slow, ease: gsapEase.enter, stagger: stagger.base },
             "-=0.2",
-          )
-          .fromTo(
-            "[data-hero=canvas]",
-            { autoAlpha: 0 },
-            { autoAlpha: 1, duration: dur.slower, ease: gsapEase.enter },
-            "-=0.6",
           );
 
         const cue = gsap.to("[data-hero=cue-dot]", {
@@ -95,43 +88,15 @@ export function Hero() {
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(
-          ["[data-hero=eyebrow]", "[data-hero=line] > span", "[data-hero=sub]", "[data-hero=cta]", "[data-hero=badge]", "[data-hero=canvas]"],
+          ["[data-hero=eyebrow]", "[data-hero=line] > span", "[data-hero=sub]", "[data-hero=cta]", "[data-hero=badge]"],
           { autoAlpha: 1, yPercent: 0, y: 0 },
         );
       });
 
-      // Mouse-reactive backdrop — the canvas drifts a few px toward the
-      // pointer, on top of the node network's own pointer repulsion.
-      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let onPointerMove: ((e: PointerEvent) => void) | undefined;
-      let onPointerLeave: (() => void) | undefined;
-      if (canHover && !reducedMotion && rootRef.current) {
-        const canvasWrap = rootRef.current.querySelector<HTMLElement>("[data-hero=canvas]");
-        if (canvasWrap) {
-          const moveX = gsap.quickTo(canvasWrap, "x", { duration: 0.6, ease: "power3" });
-          const moveY = gsap.quickTo(canvasWrap, "y", { duration: 0.6, ease: "power3" });
-          onPointerMove = (e: PointerEvent) => {
-            const r = rootRef.current!.getBoundingClientRect();
-            const px = (e.clientX - r.left) / r.width - 0.5;
-            const py = (e.clientY - r.top) / r.height - 0.5;
-            moveX(px * 18);
-            moveY(py * 18);
-          };
-          onPointerLeave = () => {
-            moveX(0);
-            moveY(0);
-          };
-          rootRef.current.addEventListener("pointermove", onPointerMove);
-          rootRef.current.addEventListener("pointerleave", onPointerLeave);
-        }
-      }
-
-      return () => {
-        mm.revert();
-        if (onPointerMove) rootRef.current?.removeEventListener("pointermove", onPointerMove);
-        if (onPointerLeave) rootRef.current?.removeEventListener("pointerleave", onPointerLeave);
-      };
+      // O parallax do ponteiro movia o wrapper do canvas. O canvas agora é uma
+      // camada global (PageSignal) e não pertence mais ao hero; a repulsão dos
+      // nós ao mouse continua, dentro do próprio SignalCanvas.
+      return () => mm.revert();
     },
     { scope: rootRef },
   );
@@ -140,14 +105,8 @@ export function Hero() {
     <section
       id="top"
       ref={rootRef}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-[var(--color-bg)] pt-28 pb-20"
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-20"
     >
-      <div
-        data-hero="canvas"
-        className="pointer-events-none absolute inset-0 opacity-0 [mask-image:radial-gradient(ellipse_70%_70%_at_60%_40%,black,transparent)]"
-      >
-        <SignalCanvas className="h-full w-full" />
-      </div>
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
