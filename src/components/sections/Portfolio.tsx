@@ -103,7 +103,17 @@ export function Portfolio() {
   );
 
   return (
-    <section id="portfolio" ref={rootRef} className="relative bg-[var(--color-bg)] py-20 sm:py-28">
+    /* Padding de topo menor que o de baixo, só aqui: esta é a única seção
+       que vem logo depois de uma seção fixada de tela cheia, e o quadro
+       fixado já termina com ~210px de folga própria (o conteúdo é
+       centralizado em 100svh). Com py-28 dos dois lados dava 322px de
+       preto seguido entre o fim do "Como funciona" e a palavra
+       "Portfólio". A folga de baixo continua igual à das outras seções. */
+    <section
+      id="portfolio"
+      ref={rootRef}
+      className="relative bg-[var(--color-bg)] pt-8 pb-20 sm:pt-12 sm:pb-28"
+    >
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p
