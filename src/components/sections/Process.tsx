@@ -59,7 +59,11 @@ export function Process() {
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: `+=${(steps.length - 1) * 80}%`,
+            // 55% de viewport por transição, não 80%: com 4 passos isso é
+            // 165% de rolagem presa em vez de 240%. Enquanto a seção está
+            // fixada a página não anda, e somado à inércia do scroll era a
+            // outra metade da sensação de travamento.
+            end: `+=${(steps.length - 1) * 55}%`,
             scrub: 0.6,
             pin: true,
             anticipatePin: 1,

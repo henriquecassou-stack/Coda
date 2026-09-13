@@ -22,7 +22,22 @@ export function SmoothScroll() {
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
-    const lenis = new Lenis({ autoRaf: false, lerp: 0.1 });
+    // lerp 0.3, não 0.1.
+    //
+    // Medido com eventos de roda reais (scrollTo do script não passa pelo
+    // Lenis, então medir por ali esconde exatamente este problema): depois de
+    // UM golpe de roda, a página levava 1046ms até parar de deslizar com
+    // lerp 0.1. Os quadros estavam em 60fps o tempo todo — não era engasgo,
+    // era a página não responder ao gesto. É isso que se sente como travar.
+    //
+    // A curva medida: 0,1 = 1046ms · 0,18 = 740ms · 0,25 = 557ms ·
+    // 0,35 = 441ms · sem Lenis = 122ms. 0,3 corta a cauda para menos da
+    // metade e mantém o deslize.
+    //
+    // Para voltar ao scroll nativo, é só não criar o Lenis (apagar este
+    // componente do layout); nada mais no site depende dele além do offset
+    // de âncora abaixo.
+    const lenis = new Lenis({ autoRaf: false, lerp: 0.3 });
     window.__lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
 

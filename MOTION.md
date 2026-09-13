@@ -264,3 +264,38 @@ quadros perdidos.
 causas reais não eram as suspeitas óbvias (parallax com scrub, tilt 3D, Lenis,
 quantidade de ScrollTriggers) — eram uma propriedade de CSS e a frequência de
 redesenho de um canvas.
+
+## 2026-09-13 — o travamento não era engasgo, era latência
+
+Segunda rodada, depois de o cliente dizer que ainda travava. O erro estava na
+**forma de medir**: todas as medições anteriores usavam `window.scrollTo()`,
+que **não passa pelo Lenis**. Medindo assim, o problema some do gráfico.
+
+Com eventos de roda reais, o quadro mudou: **60fps o tempo todo, 0-1% de
+quadros perdidos** — e, depois de UM golpe de roda, **1046ms** até a página
+parar de deslizar. Não era engasgo. Era a página não responder ao gesto, que é
+o que se sente como travar.
+
+Curva medida da latência por `lerp` do Lenis:
+
+| lerp | tempo até parar |
+|---|---|
+| 0,1 (era o valor) | 1046ms |
+| 0,18 | 740ms |
+| 0,25 | 557ms |
+| 0,35 | 441ms |
+| sem Lenis | 122ms |
+
+Ficou em **0,3** (506ms medidos): corta a cauda para menos da metade e mantém o
+deslize que dá o caráter do site. Voltar ao nativo é tirar o `<SmoothScroll />`
+do layout — nada mais depende dele além do offset de âncora.
+
+A outra metade era a **seção fixada**: 240% de viewport de rolagem em que a
+página literalmente não anda. Foi para 165% (3060px → 1485px). Somadas, as duas
+coisas eram: você rola, a página não se mexe por um tempo, e quando se mexe
+continua deslizando depois que você parou.
+
+**Regra que fica:** medir rolagem com `scrollTo()` mede o navegador, não o
+site. Onde há scroll suave, meça com `mouse.wheel()` — e olhe latência, não só
+taxa de quadros. Um site pode estar a 60fps cravados e ainda assim parecer
+travado.

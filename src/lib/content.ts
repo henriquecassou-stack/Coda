@@ -87,7 +87,8 @@ export const services = [
  *      serviço entrega), verdadeiro sem depender de número medido.
  *
  * As células `atendimento` e `integracoes` já seguem o caminho 2 e podem ir
- * ao ar como estão. As três com número (`tempo`, `leads`, `prazo`) não.
+ * ao ar como estão. `prazo` foi definido por você (1 semana). Faltam `tempo`
+ * (-70%) e `leads` (+2.4x), que continuam ilustrativos.
  */
 export type CapabilityCell =
   | {
@@ -148,8 +149,8 @@ export const capabilities: {
       id: "prazo",
       size: "full",
       kind: "stat",
-      value: 3,
-      suffix: " semanas",
+      value: 1,
+      suffix: " semana",
       label: "tempo médio até o site novo estar no ar",
     },
   ],
