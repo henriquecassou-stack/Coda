@@ -95,8 +95,8 @@ export function Footer() {
                 },
                 {
                   icon: "linkedin" as IconName,
-                  label: `/${brand.linkedinCompany}`,
-                  href: `https://linkedin.com/company/${brand.linkedinCompany}`,
+                  label: brand.linkedinLabel,
+                  href: brand.linkedinUrl,
                   external: true,
                 },
               ].map((row) => (

@@ -194,8 +194,8 @@ export function ContactCTA() {
               {
                 icon: "linkedin" as IconName,
                 label: "LinkedIn",
-                value: `/${brand.linkedinCompany}`,
-                href: `https://linkedin.com/company/${brand.linkedinCompany}`,
+                value: brand.linkedinLabel,
+                href: brand.linkedinUrl,
                 external: true,
               },
             ].map((channel) => (

@@ -43,7 +43,7 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
 | **Contato** | `brand` | `contato@coda.studio` e `+55 (11) 90000-0000` são fictícios. |
 | **Instagram** | `instagramHandle` | Constante no topo de `content.ts`. É o único lugar a trocar: o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. Hoje: `coda.studio`. |
-| **LinkedIn** | `linkedinCompany` | Constante no topo de `content.ts`, mesmo esquema do Instagram — é o trecho final de `linkedin.com/company/<...>`. Hoje: `coda-studio`. |
+| ~~LinkedIn~~ | `linkedinUrl` | ✅ Perfil real já configurado. Para trocar, é a URL completa na constante `linkedinUrl` no topo de `content.ts`, e o texto exibido em `linkedinLabel`. |
 | **WhatsApp** | `brand.social` | Ainda é o número fictício. |
 | **Domínio** | `NEXT_PUBLIC_SITE_URL` | Ver a seção acima — afeta as prévias no WhatsApp/LinkedIn. |
 
