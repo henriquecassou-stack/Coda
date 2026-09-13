@@ -169,8 +169,14 @@ export function ContactCTA() {
             className="mt-12 max-w-sm divide-y divide-[var(--color-border)] border-t border-[var(--color-border)] lg:mt-auto"
           >
             {[
-              { label: "E-mail", value: brand.email, href: `mailto:${brand.email}` },
-              { label: "WhatsApp", value: brand.phone, href: whatsappHref },
+              { label: "E-mail", value: brand.email, href: `mailto:${brand.email}`, external: false },
+              { label: "WhatsApp", value: brand.phone, href: whatsappHref, external: true },
+              {
+                label: "Instagram",
+                value: `@${brand.instagramHandle}`,
+                href: `https://instagram.com/${brand.instagramHandle}`,
+                external: true,
+              },
             ].map((channel) => (
               <div key={channel.label} className="flex items-baseline justify-between gap-6 py-5">
                 <dt className="text-xs font-semibold tracking-[0.18em] text-[var(--color-fg-faint)] uppercase">
@@ -179,6 +185,7 @@ export function ContactCTA() {
                 <dd>
                   <a
                     href={channel.href}
+                    {...(channel.external ? { target: "_blank", rel: "noreferrer" } : {})}
                     className="text-base text-white transition-colors duration-[var(--dur-fast)] hover:text-[var(--color-cyan)]"
                   >
                     {channel.value}

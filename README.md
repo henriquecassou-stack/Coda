@@ -41,7 +41,9 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Números das capacidades** | `capabilities` | `-70%`, `+2.4x` e `3 semanas` são inventados. Troque pelos reais citando a origem no `label`, ou reescreva como capacidade em vez de resultado (é o que a célula `atendimento` já faz). |
 | **Depoimentos** | `testimonials` | Citações reais com nome, cargo e empresa — e autorização do cliente. Depoimento anônimo convence pouco. |
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
-| **Contato** | `brand` | `contato@coda.studio` e `+55 (11) 90000-0000` são fictícios. Ajuste também os links de `social`. |
+| **Contato** | `brand` | `contato@coda.studio` e `+55 (11) 90000-0000` são fictícios. |
+| **Instagram** | `instagramHandle` | Constante no topo de `content.ts`. É o único lugar a trocar: o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. Hoje: `coda.studio`. |
+| **LinkedIn / WhatsApp** | `brand.social` | Ainda apontam para a home das plataformas, não para perfis reais. |
 | **Domínio** | `NEXT_PUBLIC_SITE_URL` | Ver a seção acima — afeta as prévias no WhatsApp/LinkedIn. |
 
 Para os prints dos cases: peça autorização ao cliente e borre dados pessoais (nomes, telefones,

@@ -6,6 +6,13 @@
  * real cases, testimonials and pricing before launch.
  */
 
+/**
+ * ⚠️ O ÚNICO lugar para trocar o Instagram: o link do rodapé, o canal direto na
+ * seção de contato e o `sameAs` dos dados estruturados saem todos daqui.
+ * Troque pelo perfil real, sem o @.
+ */
+const instagramHandle = "coda.studio";
+
 export const brand = {
   name: "CODA",
   tagline: "WEBSITES + AUTOMAÇÕES",
@@ -13,8 +20,10 @@ export const brand = {
     "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.",
   email: "contato@coda.studio",
   phone: "+55 (11) 90000-0000",
+  instagramHandle,
   social: [
-    { label: "Instagram", href: "https://instagram.com" },
+    { label: "Instagram", href: `https://instagram.com/${instagramHandle}` },
+    // ⚠️ Estes dois ainda apontam para a home das plataformas, não para perfis.
     { label: "LinkedIn", href: "https://linkedin.com" },
     { label: "WhatsApp", href: "https://wa.me/5511900000000" },
   ],
