@@ -7,11 +7,15 @@
  */
 
 /**
- * ⚠️ O ÚNICO lugar para trocar o Instagram: o link do rodapé, o canal direto na
- * seção de contato e o `sameAs` dos dados estruturados saem todos daqui.
- * Troque pelo perfil real, sem o @.
+ * ⚠️ Os perfis das redes. Cada um é o ÚNICO lugar para trocar a rede
+ * correspondente: os links do rodapé, os canais diretos na seção de contato e
+ * o `sameAs` dos dados estruturados saem todos daqui.
+ *
+ * - `instagramHandle`: o perfil, sem o @.
+ * - `linkedinCompany`: o trecho final de linkedin.com/company/<...>.
  */
 const instagramHandle = "coda.studio";
+const linkedinCompany = "coda-studio";
 
 export const brand = {
   name: "CODA",
@@ -21,12 +25,13 @@ export const brand = {
   email: "contato@coda.studio",
   phone: "+55 (11) 90000-0000",
   instagramHandle,
+  linkedinCompany,
+  /** `icon` casa com os nomes em `src/components/ui/SocialIcon.tsx`. */
   social: [
-    { label: "Instagram", href: `https://instagram.com/${instagramHandle}` },
-    // ⚠️ Estes dois ainda apontam para a home das plataformas, não para perfis.
-    { label: "LinkedIn", href: "https://linkedin.com" },
-    { label: "WhatsApp", href: "https://wa.me/5511900000000" },
-  ],
+    { label: "Instagram", icon: "instagram", href: `https://instagram.com/${instagramHandle}` },
+    { label: "LinkedIn", icon: "linkedin", href: `https://linkedin.com/company/${linkedinCompany}` },
+    { label: "WhatsApp", icon: "whatsapp", href: "https://wa.me/5511900000000" },
+  ] as const,
 };
 
 export const nav = [

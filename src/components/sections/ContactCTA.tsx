@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { dur, gsapEase } from "@/lib/motion-tokens";
 import { brand, contact } from "@/lib/content";
+import { SocialIcon, type IconName } from "@/components/ui/SocialIcon";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -169,17 +170,38 @@ export function ContactCTA() {
             className="mt-12 max-w-sm divide-y divide-[var(--color-border)] border-t border-[var(--color-border)] lg:mt-auto"
           >
             {[
-              { label: "E-mail", value: brand.email, href: `mailto:${brand.email}`, external: false },
-              { label: "WhatsApp", value: brand.phone, href: whatsappHref, external: true },
               {
+                icon: "mail" as IconName,
+                label: "E-mail",
+                value: brand.email,
+                href: `mailto:${brand.email}`,
+                external: false,
+              },
+              {
+                icon: "whatsapp" as IconName,
+                label: "WhatsApp",
+                value: brand.phone,
+                href: whatsappHref,
+                external: true,
+              },
+              {
+                icon: "instagram" as IconName,
                 label: "Instagram",
                 value: `@${brand.instagramHandle}`,
                 href: `https://instagram.com/${brand.instagramHandle}`,
                 external: true,
               },
+              {
+                icon: "linkedin" as IconName,
+                label: "LinkedIn",
+                value: `/${brand.linkedinCompany}`,
+                href: `https://linkedin.com/company/${brand.linkedinCompany}`,
+                external: true,
+              },
             ].map((channel) => (
-              <div key={channel.label} className="flex items-baseline justify-between gap-6 py-5">
-                <dt className="text-xs font-semibold tracking-[0.18em] text-[var(--color-fg-faint)] uppercase">
+              <div key={channel.label} className="flex items-center justify-between gap-6 py-5">
+                <dt className="flex items-center gap-2.5 text-xs font-semibold tracking-[0.18em] text-[var(--color-fg-faint)] uppercase">
+                  <SocialIcon name={channel.icon} className="h-4 w-4 flex-none" />
                   {channel.label}
                 </dt>
                 <dd>

@@ -6,6 +6,7 @@ import { gsap } from "@/lib/gsap";
 import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { brand, footer } from "@/lib/content";
 import { Logo } from "@/components/ui/Logo";
+import { SocialIcon, type IconName } from "@/components/ui/SocialIcon";
 
 export function Footer() {
   const rootRef = useRef<HTMLElement>(null);
@@ -78,32 +79,41 @@ export function Footer() {
               Contato
             </h2>
             <ul className="mt-4 space-y-3">
-              <li>
-                <a
-                  href={`mailto:${brand.email}`}
-                  className="text-sm text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:text-white"
-                >
-                  {brand.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${brand.phone.replace(/\D/g, "")}`}
-                  className="text-sm text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:text-white"
-                >
-                  {brand.phone}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`https://instagram.com/${brand.instagramHandle}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:text-white"
-                >
-                  @{brand.instagramHandle}
-                </a>
-              </li>
+              {[
+                { icon: "mail" as IconName, label: brand.email, href: `mailto:${brand.email}`, external: false },
+                {
+                  icon: "whatsapp" as IconName,
+                  label: brand.phone,
+                  href: `tel:${brand.phone.replace(/\D/g, "")}`,
+                  external: false,
+                },
+                {
+                  icon: "instagram" as IconName,
+                  label: `@${brand.instagramHandle}`,
+                  href: `https://instagram.com/${brand.instagramHandle}`,
+                  external: true,
+                },
+                {
+                  icon: "linkedin" as IconName,
+                  label: `/${brand.linkedinCompany}`,
+                  href: `https://linkedin.com/company/${brand.linkedinCompany}`,
+                  external: true,
+                },
+              ].map((row) => (
+                <li key={row.href}>
+                  <a
+                    href={row.href}
+                    {...(row.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                    className="group/row flex items-center gap-2.5 text-sm text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:text-white"
+                  >
+                    <SocialIcon
+                      name={row.icon}
+                      className="h-4 w-4 flex-none text-[var(--color-fg-faint)] transition-colors duration-[var(--dur-fast)] group-hover/row:text-[var(--color-cyan)]"
+                    />
+                    {row.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -112,16 +122,21 @@ export function Footer() {
           <p className="text-xs text-[var(--color-fg-faint)]">
             © {new Date().getFullYear()} {brand.name}. Todos os direitos reservados.
           </p>
-          <div className="flex gap-6">
+          <div className="flex gap-3">
             {brand.social.map((s) => (
               <a
                 key={s.label}
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-medium tracking-[0.08em] text-[var(--color-fg-muted)] uppercase transition-colors duration-[var(--dur-fast)] hover:text-white"
+                aria-label={`${brand.name} no ${s.label}`}
+                title={s.label}
+                // 40x40 de alvo em volta de um glifo de 18px: o símbolo sozinho
+                // ficaria abaixo do mínimo de 24x24 e seria difícil de acertar
+                // no celular.
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-fg-muted)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--color-border-strong)] hover:text-white"
               >
-                {s.label}
+                <SocialIcon name={s.icon} className="h-[18px] w-[18px]" />
               </a>
             ))}
           </div>
