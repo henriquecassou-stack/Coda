@@ -182,3 +182,35 @@ para um controle direto. É a mesma regra de sempre: a animação serve à leitu
 Os sliders são desenhados à mão em `globals.css` (`.calc-range`) porque o controle nativo
 ignora a paleta inteira. `-webkit-` e `-moz-` precisam de regras separadas: um pseudo-elemento
 desconhecido invalida a regra toda no outro motor.
+
+## 2026-09-13 — proposta: seção Antes / Depois (FlowShift)
+
+A primeira seção em que o conceito do sistema — "ruído que vira sinal" — é o
+**produto**, não uma entrada de texto. O mesmo processo aparece emaranhado e
+depois encadeado, e os nós **viajam fisicamente** entre os dois estados em vez
+de fazer crossfade entre dois desenhos: o crossfade mostraria dois diagramas
+diferentes, a viagem mostra que são os mesmos cinco passos.
+
+Escolhas que valem registro:
+
+- **Sem pin.** O site já tem uma seção fixada (Processo, 240% de rolagem).
+  Fixar outra logo acima transformaria o meio da página em duas paradas
+  obrigatórias. Aqui o scrub está amarrado à própria travessia da seção pela
+  viewport (`top 78%` → `center 42%`), então a transformação acontece enquanto
+  a pessoa rola normalmente.
+- **Arestas redesenhadas a cada tick**, a partir do `getBoundingClientRect()`
+  real de cada nó, em vez de dois conjuntos de `path` em crossfade. São sete
+  arestas: o custo é irrelevante, e em troca as linhas acompanham os nós
+  enquanto eles andam. A curvatura é um único parâmetro interpolado de
+  `bow` até `0`.
+- **`gradientUnits="userSpaceOnUse"`, não o padrão.** Com o `objectBoundingBox`
+  padrão, a aresta final — uma reta perfeitamente horizontal — tem caixa de
+  altura zero, e um gradiente em unidades de caixa simplesmente não pinta.
+  As linhas sumiam exatamente ao chegar no estado limpo. As coordenadas do
+  gradiente são escritas junto com o `viewBox`, em pixels do palco.
+- **Badges de espera derivadas das arestas.** Cada uma fica no ponto médio da
+  quadrática que ela atrasa (`0.25·A + 0.5·C + 0.25·B`). Soltas em coordenadas
+  fixas, não diziam nada; em cima da linha, dizem qual emenda custa tempo.
+- **Movimento reduzido** mostra o estado final e tira as duas legendas do
+  empilhamento absoluto — sem isso elas imprimem uma por cima da outra, porque
+  o empilhamento só existe para o crossfade do scrub.

@@ -156,6 +156,33 @@ export const capabilities: {
 };
 
 /**
+ * PROPOSTA — conteúdo da seção "Antes / Depois" (ideia 4 do briefing).
+ *
+ * Os passos abaixo são um processo genérico de PME, não um case de cliente:
+ * é uma ilustração de como o trabalho manual se encadeia, e qualquer empresa
+ * reconhece o seu no desenho. Nenhum resultado da CODA é afirmado aqui.
+ */
+export const flow = {
+  eyebrow: "ANTES / DEPOIS",
+  headline: "O MESMO PROCESSO,",
+  headlineGradient: "SEM OS REMENDOS.",
+  sub: "Role para ver. São os mesmos passos nos dois estados — o que muda é quem os conecta, e quanto tempo cada emenda custa.",
+  steps: [
+    { id: "pedido", label: "Pedido no WhatsApp" },
+    { id: "planilha", label: "Planilha" },
+    { id: "financeiro", label: "Financeiro" },
+    { id: "cliente", label: "Cliente avisado" },
+    { id: "relatorio", label: "Relatório" },
+  ],
+  // Esperas que só existem no estado manual — somem quando o fluxo fecha.
+  // A posição de cada uma é derivada da aresta que ela atrasa (ver FlowShift).
+  waits: [{ label: "espera 2 h" }, { label: "espera 1 dia" }, { label: "alguém esquece" }],
+  beforeCaption: "Cinco passos, quatro pessoas e três esperas. Cada emenda é um lugar onde o pedido para.",
+  afterCaption: "Os mesmos cinco passos, encadeados por uma automação. As esperas não foram reduzidas — deixaram de existir.",
+  afterBadge: "sem espera entre passos",
+};
+
+/**
  * PROPOSTA — conteúdo da seção "Calculadora" (ainda não aprovada).
  *
  * Nada aqui é um resultado da CODA: a seção só faz aritmética com os números

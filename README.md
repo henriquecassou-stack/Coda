@@ -47,6 +47,20 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 Para os prints dos cases: peça autorização ao cliente e borre dados pessoais (nomes, telefones,
 e-mails, valores) que apareçam nas telas.
 
+## Seção "Antes / Depois" — proposta, não aprovada
+
+A seção **Antes / Depois** (`src/components/sections/FlowShift.tsx`) foi adicionada como proposta
+(ideia 4 do briefing). Os cinco passos são um processo genérico de PME, não um case de cliente:
+serve para ilustrar como o trabalho manual se encadeia. Nenhum resultado da CODA é afirmado ali.
+
+Para remover: `git revert` do commit que a criou, ou à mão — apague
+`src/components/sections/FlowShift.tsx`, a linha `<FlowShift />` e seu import em `src/app/page.tsx`,
+e o bloco `flow` em `src/lib/content.ts`.
+
+Para editar o processo desenhado: mexa em `flow.steps` e `flow.waits` no `content.ts`. As posições
+dos nós ficam na constante `LAYOUT` dentro do componente (um conjunto por breakpoint), e as posições
+das esperas são derivadas das arestas — não há coordenada para ajustar nelas.
+
 ## Seção "Calculadora" — proposta, não aprovada
 
 A seção **Conta rápida / Calculadora** (`src/components/sections/Calculator.tsx`) foi adicionada

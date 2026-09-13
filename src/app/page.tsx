@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
+import { FlowShift } from "@/components/sections/FlowShift";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { Calculator } from "@/components/sections/Calculator";
 import { Process } from "@/components/sections/Process";
@@ -14,6 +15,7 @@ export default function Home() {
     <>
       <Hero />
       <Services />
+      <FlowShift />
       <Capabilities />
       <Calculator />
       <Process />
