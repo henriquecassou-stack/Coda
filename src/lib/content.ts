@@ -11,7 +11,9 @@
  * correspondente: os links do rodapé, os canais diretos na seção de contato e
  * o `sameAs` dos dados estruturados saem todos daqui.
  *
- * - `instagramHandle`: ⚠️ ainda fictício — o perfil real, sem o @.
+ * - `instagramHandle`: o perfil real, sem o @. A URL é montada a partir dele
+ *   logo abaixo, com o `www.` e a barra final que o próprio Instagram usa,
+ *   para o link cair direto no perfil em vez de passar por um redirecionamento.
  * - `linkedinUrl`: a URL completa do perfil. É a URL inteira, e não só o
  *   trecho final, porque o LinkedIn usa `/in/` para perfis e `/company/` para
  *   páginas de empresa — guardar o endereço todo evita ter que decidir isso
@@ -20,7 +22,8 @@
  * - `linkedinLabel`: o que aparece na tela. O slug completo termina num id
  *   gerado (`-a3843b364`) que não diz nada a ninguém.
  */
-const instagramHandle = "coda.studio";
+const instagramHandle = "coda.automatizacoes";
+const instagramUrl = `https://www.instagram.com/${instagramHandle}/`;
 const linkedinUrl = "https://www.linkedin.com/in/coda-automatiza%C3%A7%C3%B5es-a3843b364/";
 const linkedinLabel = "coda-automatizações";
 
@@ -32,11 +35,12 @@ export const brand = {
   email: "contato@coda.studio",
   phone: "+55 (11) 90000-0000",
   instagramHandle,
+  instagramUrl,
   linkedinUrl,
   linkedinLabel,
   /** `icon` casa com os nomes em `src/components/ui/SocialIcon.tsx`. */
   social: [
-    { label: "Instagram", icon: "instagram", href: `https://instagram.com/${instagramHandle}` },
+    { label: "Instagram", icon: "instagram", href: instagramUrl },
     { label: "LinkedIn", icon: "linkedin", href: linkedinUrl },
     { label: "WhatsApp", icon: "whatsapp", href: "https://wa.me/5511900000000" },
   ] as const,

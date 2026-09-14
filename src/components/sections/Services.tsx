@@ -131,8 +131,14 @@ export function Services() {
     { scope: rootRef },
   );
 
+  // `overflow-x-clip` na seção: os cards entram deslizando de x: ±64px. Num
+  // celular de 390px o card já ocupa quase a largura toda, então esse
+  // deslocamento inicial empurrava 40px para fora e a página ganhava uma barra
+  // de rolagem horizontal até a animação rodar. `clip`, e não `hidden`, porque
+  // `hidden` cria um contexto de rolagem que quebraria o `position: sticky` e o
+  // pin do ScrollTrigger nas seções vizinhas.
   return (
-    <section id="servicos" ref={rootRef} className="relative py-20 sm:py-28">
+    <section id="servicos" ref={rootRef} className="relative overflow-x-clip py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="mb-16 max-w-2xl">
           <p

@@ -90,7 +90,7 @@ export function Footer() {
                 {
                   icon: "instagram" as IconName,
                   label: `@${brand.instagramHandle}`,
-                  href: `https://instagram.com/${brand.instagramHandle}`,
+                  href: brand.instagramUrl,
                   external: true,
                 },
                 {

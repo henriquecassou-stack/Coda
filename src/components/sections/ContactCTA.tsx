@@ -188,7 +188,7 @@ export function ContactCTA() {
                 icon: "instagram" as IconName,
                 label: "Instagram",
                 value: `@${brand.instagramHandle}`,
-                href: `https://instagram.com/${brand.instagramHandle}`,
+                href: brand.instagramUrl,
                 external: true,
               },
               {
