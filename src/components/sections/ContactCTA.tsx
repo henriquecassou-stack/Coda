@@ -20,6 +20,10 @@ export function ContactCTA() {
   const traceRef = useRef<SVGPathElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
   const [status, setStatus] = useState<Status>("idle");
+  // A rota distingue "sem serviço de envio configurado", "muitas mensagens em
+  // pouco tempo" e "o provedor recusou", e cada um pede uma ação diferente de
+  // quem está lendo. Um "algo deu errado" genérico jogaria os três fora.
+  const [errorMessage, setErrorMessage] = useState("");
 
   useGSAP(
     () => {
@@ -107,16 +111,23 @@ export function ContactCTA() {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
     setStatus("sending");
+    setErrorMessage("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("request failed");
+      if (!res.ok) {
+        const corpo = await res.json().catch(() => null);
+        throw new Error(typeof corpo?.error === "string" ? corpo.error : "");
+      }
       setStatus("sent");
       form.reset();
-    } catch {
+    } catch (err) {
+      // A mensagem só aparece se veio do servidor; uma falha de rede não tem
+      // nada de útil a dizer além do texto padrão.
+      setErrorMessage(err instanceof Error ? err.message : "");
       setStatus("error");
     }
   }
@@ -273,7 +284,11 @@ export function ContactCTA() {
 
           <p role="status" className="min-h-[1.2em] text-sm">
             {status === "sent" && <span className="text-[var(--color-cyan)]">Recebemos sua mensagem — retornamos em breve.</span>}
-            {status === "error" && <span className="text-red-400">Algo deu errado. Tente novamente ou use o e-mail no rodapé.</span>}
+            {status === "error" && (
+              <span className="text-red-400">
+                {errorMessage || `Algo deu errado. Tente novamente ou escreva para ${brand.email}.`}
+              </span>
+            )}
           </p>
         </form>
       </div>
