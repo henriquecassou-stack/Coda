@@ -41,10 +41,10 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Números das capacidades** | `capabilities` | `-70%`, `+2.4x` e `3 semanas` são inventados. Troque pelos reais citando a origem no `label`, ou reescreva como capacidade em vez de resultado (é o que a célula `atendimento` já faz). |
 | **Depoimentos** | `testimonials` | Citações reais com nome, cargo e empresa — e autorização do cliente. Depoimento anônimo convence pouco. |
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
-| **Contato** | `brand` | `contato@coda.studio` e `+55 (11) 90000-0000` são fictícios. |
+| **WhatsApp / telefone** | `brand.phone` | `+55 (11) 90000-0000` ainda é fictício. O número em `brand.social` (`wa.me/5511900000000`) é o mesmo e precisa mudar junto. |
+| ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). Atenção: o **formulário ainda não envia para ela** — `src/app/api/contact/route.ts` só valida e registra no log. Ligar a um serviço de envio antes do lançamento. |
 | ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automatizacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |
 | ~~LinkedIn~~ | `linkedinUrl` | ✅ Perfil real já configurado. Para trocar, é a URL completa na constante `linkedinUrl` no topo de `content.ts`, e o texto exibido em `linkedinLabel`. |
-| **WhatsApp** | `brand.social` | Ainda é o número fictício. |
 | **Domínio** | `NEXT_PUBLIC_SITE_URL` | Ver a seção acima — afeta as prévias no WhatsApp/LinkedIn. |
 
 Para os prints dos cases: peça autorização ao cliente e borre dados pessoais (nomes, telefones,

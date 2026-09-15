@@ -32,7 +32,10 @@ export const brand = {
   tagline: "WEBSITES + AUTOMAÇÕES",
   positioning:
     "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.",
-  email: "contato@coda.studio",
+  /** Caixa real. `brand.email` já é o único lugar a trocar: o rodapé, o canal
+      direto no contato, a imagem de prévia social e os dados estruturados
+      saem todos daqui. */
+  email: "atmzcoda@gmail.com",
   phone: "+55 (11) 90000-0000",
   instagramHandle,
   instagramUrl,
