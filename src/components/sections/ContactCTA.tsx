@@ -237,11 +237,11 @@ export function ContactCTA() {
               defaultValue=""
               className="w-full rounded-xl border border-[var(--color-border)] bg-transparent px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[var(--color-cyan)]"
             >
-              <option value="" disabled className="bg-[var(--color-bg-elevated)]">
+              <option value="" disabled>
                 Selecione uma opção
               </option>
               {contact.serviceOptions.map((opt) => (
-                <option key={opt} value={opt} className="bg-[var(--color-bg-elevated)]">
+                <option key={opt} value={opt}>
                   {opt}
                 </option>
               ))}

@@ -89,6 +89,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* O painel que abre num <select> é desenhado pelo sistema, não pela página:
+   ele não herda o fundo do formulário. Sem uma cor própria, a opção ficava
+   com o branco herdado do <select> sobre o painel claro do sistema — branco
+   no branco, ilegível. Por isso a cor E o fundo vão declarados aqui: se a
+   plataforma honrar os dois, é branco sobre #121218; se ignorar o fundo, o
+   `color-scheme: dark` do documento faz o painel do sistema já vir escuro;
+   e se ignorar a cor, o fundo escuro daqui segura o contraste. */
+option {
+  background-color: var(--color-bg-elevated-2);
+  color: var(--color-fg);
+}
+/* O placeholder desabilitado lê como placeholder, não como uma opção real. */
+option:disabled {
+  color: var(--color-fg-faint);
+}
+
 ::selection {
   background: var(--color-blue);
   color: #ffffff;
