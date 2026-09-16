@@ -11,6 +11,53 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+## Colocando no ar
+
+O jeito mais curto é a Vercel, que é de quem faz o Next.js: ela detecta o projeto
+sozinha, sem nenhum arquivo de configuração. Não há `vercel.json`, `Dockerfile` nem script
+de build especial neste repositório de propósito — não é preciso.
+
+**1. Subir.** Em [vercel.com](https://vercel.com), entre com a conta do GitHub, **Add New →
+Project**, escolha o repositório `coda` e clique em **Deploy**. Não mude nada nas opções: framework,
+comando de build e diretório de saída já vêm certos. Em um ou dois minutos o site está num endereço
+tipo `coda-xxxx.vercel.app`.
+
+Esse endereço já é o site no ar, de verdade. Ninguém chega nele sem o link — o que o torna o lugar
+certo para conferir tudo antes de apontar o domínio.
+
+**2. As variáveis.** Em **Settings → Environment Variables**, adicione:
+
+| Variável | Valor | Sem ela |
+|---|---|---|
+| `RESEND_API_KEY` | a chave da Resend (veja "Formulário de contato") | O formulário avisa que o envio está indisponível |
+| `NEXT_PUBLIC_SITE_URL` | o endereço do site, sem barra no fim | As prévias no WhatsApp/LinkedIn apontam para o domínio errado |
+
+Comece com `NEXT_PUBLIC_SITE_URL` no próprio endereço `.vercel.app` e troque pelo domínio quando ele
+existir. Variável nova só vale depois de um novo deploy: **Deployments → ⋯ → Redeploy**.
+
+**3. O domínio.** Registre o domínio (Registro.br para `.com.br`, ou Cloudflare/Namecheap para
+`.com`) e, em **Settings → Domains** na Vercel, adicione-o. A Vercel mostra o registro DNS para
+copiar no painel de quem vendeu o domínio. A propagação costuma levar minutos, às vezes horas. O
+HTTPS é automático.
+
+Feito isso, volte no passo 2 e troque `NEXT_PUBLIC_SITE_URL` pelo domínio real.
+
+**Depois de subir, cada `git push` na `main` publica sozinho.** Um push em outra branch vira uma
+prévia com endereço próprio, sem mexer no site que está no ar.
+
+### Em que ordem fazer
+
+O site está pronto tecnicamente, mas parte do conteúdo ainda é placeholder (veja o checklist
+abaixo). Isso não impede de subir — impede de divulgar. Uma ordem que funciona:
+
+1. Suba na Vercel e confira no endereço `.vercel.app`, no celular e no computador.
+2. Ligue o formulário e mande uma mensagem de teste para si mesmo.
+3. Troque o conteúdo inventado — cases, depoimentos, números.
+4. Só então aponte o domínio e comece a divulgar o link.
+
+Inverter 3 e 4 é o único erro caro da lista: um cliente que pergunta sobre um case que não existe
+descobre a resposta na hora.
+
 ### Antes de publicar: domínio
 
 Defina `NEXT_PUBLIC_SITE_URL` com o domínio real (ex.: `https://coda.com.br`) no ambiente de deploy.
