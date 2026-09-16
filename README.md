@@ -30,17 +30,17 @@ certo para conferir tudo antes de apontar o domínio.
 | Variável | Valor | Sem ela |
 |---|---|---|
 | `RESEND_API_KEY` | a chave da Resend (veja "Formulário de contato") | O formulário avisa que o envio está indisponível |
-| `NEXT_PUBLIC_SITE_URL` | o endereço do site, sem barra no fim | As prévias no WhatsApp/LinkedIn apontam para o domínio errado |
+| `NEXT_PUBLIC_SITE_URL` | **só enquanto o site estiver no endereço `.vercel.app`**: esse endereço, sem barra no fim. Com o domínio apontando, pode apagar | A página se anuncia como `codaautomacoes.com` antes de o domínio existir, e a prévia no WhatsApp/LinkedIn sai errada |
 
-Comece com `NEXT_PUBLIC_SITE_URL` no próprio endereço `.vercel.app` e troque pelo domínio quando ele
-existir. Variável nova só vale depois de um novo deploy: **Deployments → ⋯ → Redeploy**.
+Variável nova só vale depois de um novo deploy: **Deployments → ⋯ → Redeploy**.
 
-**3. O domínio.** Registre o domínio (Registro.br para `.com.br`, ou Cloudflare/Namecheap para
-`.com`) e, em **Settings → Domains** na Vercel, adicione-o. A Vercel mostra o registro DNS para
-copiar no painel de quem vendeu o domínio. A propagação costuma levar minutos, às vezes horas. O
-HTTPS é automático.
+**3. O domínio.** Com `codaautomacoes.com` registrado, vá em **Settings → Domains** na Vercel e
+adicione-o. A Vercel mostra o registro DNS para copiar no painel de quem vendeu o domínio. A
+propagação costuma levar minutos, às vezes horas. O HTTPS é automático.
 
-Feito isso, volte no passo 2 e troque `NEXT_PUBLIC_SITE_URL` pelo domínio real.
+Quando o domínio estiver servindo o site, **apague** o `NEXT_PUBLIC_SITE_URL` do passo 2: o padrão
+do código já é o domínio certo, e uma variável apontando para o endereço `.vercel.app` passa a ser
+justamente o que faz o canonical sair errado.
 
 **Depois de subir, cada `git push` na `main` publica sozinho.** Um push em outra branch vira uma
 prévia com endereço próprio, sem mexer no site que está no ar.
@@ -58,12 +58,18 @@ abaixo). Isso não impede de subir — impede de divulgar. Uma ordem que funcion
 Inverter 3 e 4 é o único erro caro da lista: um cliente que pergunta sobre um case que não existe
 descobre a resposta na hora.
 
-### Antes de publicar: domínio
+### Domínio
 
-Defina `NEXT_PUBLIC_SITE_URL` com o domínio real (ex.: `https://coda.com.br`) no ambiente de deploy.
-Ele é usado para montar as URLs absolutas do `canonical` e da imagem de compartilhamento
-(`og:image`) em `src/app/layout.tsx`. Sem isso vale o fallback `https://coda.studio`, e as prévias no
-WhatsApp/LinkedIn vão apontar para o domínio errado.
+O domínio do site é **`https://codaautomacoes.com`**, e ele é o padrão em `src/lib/site.ts` — em
+produção não é preciso definir nada. É de lá que saem as URLs absolutas do `canonical`, da imagem de
+compartilhamento (`og:image`), do `robots.txt`, do sitemap e dos dados estruturados.
+
+`NEXT_PUBLIC_SITE_URL` serve para quando o site roda em **outro** endereço: a prévia `.vercel.app`
+enquanto o domínio ainda não aponta para cá, ou um ambiente de homologação. Nesses casos vale
+defini-la — sem isso a página se anuncia como `codaautomacoes.com`, que ainda não serve aquele
+conteúdo, e a prévia no WhatsApp/LinkedIn sai errada.
+
+Para trocar o domínio um dia, é uma linha em `src/lib/site.ts`.
 
 A imagem de compartilhamento é gerada por código em **`src/app/opengraph-image.tsx`** — edite o texto
 ali (usa as cores e o logo da marca automaticamente); não há PNG para exportar à mão.
@@ -124,7 +130,7 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). |
 | ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automatizacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |
 | ~~LinkedIn~~ | `linkedinUrl` | ✅ Perfil real já configurado. Para trocar, é a URL completa na constante `linkedinUrl` no topo de `content.ts`, e o texto exibido em `linkedinLabel`. |
-| **Domínio** | `NEXT_PUBLIC_SITE_URL` | Ver a seção acima — afeta as prévias no WhatsApp/LinkedIn. |
+| ~~Domínio~~ | `src/lib/site.ts` | ✅ `codaautomacoes.com` já configurado como padrão. Falta registrá-lo e apontá-lo na Vercel — veja "Domínio" acima. |
 
 Para os prints dos cases: peça autorização ao cliente e borre dados pessoais (nomes, telefones,
 e-mails, valores) que apareçam nas telas.
