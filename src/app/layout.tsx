@@ -7,6 +7,7 @@ import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { CursorTrail } from "@/components/ui/CursorTrail";
 import { PageSignal } from "@/components/canvas/PageSignal";
 import { StructuredData } from "@/components/StructuredData";
 import { siteUrl } from "@/lib/site";
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ScrollProgress />
         <SmoothScroll />
         <CustomCursor />
+        <CursorTrail />
         <Header />
         <main id="conteudo">{children}</main>
         <Footer />

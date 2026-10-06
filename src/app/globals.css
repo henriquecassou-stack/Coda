@@ -227,6 +227,26 @@ html.has-custom-cursor .cursor-layer {
 .cursor-ring[data-state="view"] .cursor-label {
   opacity: 1;
 }
+/* Rastro do cursor — logo abaixo da camada do cursor (z-index 90), para o
+   anel e o ponto continuarem por cima dos pontinhos. Sem `mix-blend-mode`:
+   sobre um fundo #050507 o 'screen' é visualmente quase nulo, mas obriga o
+   compositor a re-misturar com o fundo a cada quadro. */
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 89;
+  pointer-events: none;
+}
+/* O componente já desiste em ponteiro grosseiro; isto cobre o caso de o JS
+   não rodar, para o canvas não ficar ocupando uma camada à toa. */
+@media (hover: none), (pointer: coarse) {
+  .cursor-trail {
+    display: none;
+  }
+}
+
 .cursor-dot {
   position: fixed;
   top: 0;
