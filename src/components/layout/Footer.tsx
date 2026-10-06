@@ -84,7 +84,7 @@ export function Footer() {
                 {
                   icon: "whatsapp" as IconName,
                   label: brand.phone,
-                  href: `tel:${brand.phone.replace(/\D/g, "")}`,
+                  href: `tel:${brand.phone.replace(/[^\d+]/g, "")}`,
                   external: false,
                 },
                 {

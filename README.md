@@ -125,7 +125,7 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Números das capacidades** | `capabilities` | `-70%`, `+2.4x` e `3 semanas` são inventados. Troque pelos reais citando a origem no `label`, ou reescreva como capacidade em vez de resultado (é o que a célula `atendimento` já faz). |
 | **Depoimentos** | `testimonials` | Citações reais com nome, cargo e empresa — e autorização do cliente. Depoimento anônimo convence pouco. |
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
-| **WhatsApp / telefone** | `brand.phone` | `+55 (11) 90000-0000` ainda é fictício. O número em `brand.social` (`wa.me/5511900000000`) é o mesmo e precisa mudar junto. |
+| ~~WhatsApp / telefone~~ | `brand.phone` | ✅ Número real já configurado (`+55 (41) 99520-9354`). O link do WhatsApp sai dele por cálculo — trocar a constante `phone` troca os dois. |
 | **Chave da Resend** | `RESEND_API_KEY` | O formulário já está ligado ao e-mail real, mas **precisa da chave para enviar** — veja "Formulário de contato" acima. Sem ela, o formulário avisa que o envio está indisponível. |
 | ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). |
 | ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automatizacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |

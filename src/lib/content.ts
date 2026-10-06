@@ -22,8 +22,17 @@
  * - `linkedinLabel`: o que aparece na tela. O slug completo termina num id
  *   gerado (`-a3843b364`) que não diz nada a ninguém.
  */
-const instagramHandle = "coda.automatizacoes";
+const instagramHandle = "coda.automacoes";
 const instagramUrl = `https://www.instagram.com/${instagramHandle}/`;
+
+/**
+ * O telefone é escrito uma vez, no formato que vai na tela, e o link do
+ * WhatsApp sai dele — o `wa.me` quer só os dígitos, com o 55 do país na
+ * frente. Eram dois valores soltos antes, e dois valores soltos para o mesmo
+ * número é um convite a trocar um e esquecer o outro.
+ */
+const phone = "+55 (41) 99520-9354";
+const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, "")}`;
 const linkedinUrl = "https://www.linkedin.com/in/coda-automatiza%C3%A7%C3%B5es-a3843b364/";
 const linkedinLabel = "coda-automatizações";
 
@@ -36,7 +45,7 @@ export const brand = {
       direto no contato, a imagem de prévia social e os dados estruturados
       saem todos daqui. */
   email: "atmzcoda@gmail.com",
-  phone: "+55 (11) 90000-0000",
+  phone,
   instagramHandle,
   instagramUrl,
   linkedinUrl,
@@ -45,7 +54,7 @@ export const brand = {
   social: [
     { label: "Instagram", icon: "instagram", href: instagramUrl },
     { label: "LinkedIn", icon: "linkedin", href: linkedinUrl },
-    { label: "WhatsApp", icon: "whatsapp", href: "https://wa.me/5511900000000" },
+    { label: "WhatsApp", icon: "whatsapp", href: whatsappUrl },
   ] as const,
 };
 
