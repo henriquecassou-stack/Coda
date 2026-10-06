@@ -9,6 +9,7 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
 import { ContactCTA } from "@/components/sections/ContactCTA";
+import { showPortfolio, showPricing } from "@/lib/content";
 
 export default function Home() {
   return (
@@ -19,10 +20,12 @@ export default function Home() {
       <Capabilities />
       <Calculator />
       <Process />
-      <Portfolio />
+      {/* Fora do ar enquanto os cases forem inventados — ver `showPortfolio`. */}
+      {showPortfolio && <Portfolio />}
       <Manifesto />
       <Testimonials />
-      <Pricing />
+      {/* Fora do ar enquanto o preço for "sob consulta" — ver `showPricing`. */}
+      {showPricing && <Pricing />}
       <ContactCTA />
     </>
   );

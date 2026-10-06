@@ -49,11 +49,33 @@ export const brand = {
   ] as const,
 };
 
+/**
+ * O Portfólio está fora do ar por enquanto. Os quatro cases em `portfolio`
+ * (mais abaixo) são inventados, e case inventado é o tipo de coisa que o
+ * cliente descobre na primeira pergunta — melhor não ter seção do que ter uma
+ * que não se sustenta.
+ *
+ * Nada foi apagado: o conteúdo, o componente e os links continuam no lugar.
+ * Para trazer a seção de volta, troque isto para `true` — a entrada no menu,
+ * o link do rodapé e a seção em si voltam juntos, porque todos leem daqui.
+ * Antes de trocar, substitua os cases por projetos reais.
+ */
+export const showPortfolio = false;
+
+/**
+ * Os Planos (a seção "Investimento") também estão fora por enquanto. Os três
+ * planos em `pricing` dizem todos "Sob consulta", o que não ajuda ninguém a
+ * decidir e ainda ocupa uma seção inteira da página. Mesmo mecanismo: troque
+ * para `true` quando houver faixa de preço de verdade, e o menu, o rodapé e a
+ * seção voltam juntos.
+ */
+export const showPricing = false;
+
 export const nav = [
   { label: "Serviços", href: "#servicos" },
   { label: "Como funciona", href: "#como-funciona" },
-  { label: "Portfólio", href: "#portfolio" },
-  { label: "Planos", href: "#planos" },
+  ...(showPortfolio ? [{ label: "Portfólio", href: "#portfolio" }] : []),
+  ...(showPricing ? [{ label: "Planos", href: "#planos" }] : []),
   { label: "Contato", href: "#contato" },
 ];
 
@@ -396,13 +418,13 @@ export const footer = {
       links: [
         { label: "Serviços", href: "#servicos" },
         { label: "Como funciona", href: "#como-funciona" },
-        { label: "Portfólio", href: "#portfolio" },
+        ...(showPortfolio ? [{ label: "Portfólio", href: "#portfolio" }] : []),
       ],
     },
     {
       title: "Empresa",
       links: [
-        { label: "Planos", href: "#planos" },
+        ...(showPricing ? [{ label: "Planos", href: "#planos" }] : []),
         { label: "Contato", href: "#contato" },
       ],
     },
