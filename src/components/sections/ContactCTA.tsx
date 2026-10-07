@@ -7,7 +7,7 @@ import { dur, gsapEase } from "@/lib/motion-tokens";
 import { brand, contact } from "@/lib/content";
 import { SocialIcon, type IconName } from "@/components/ui/SocialIcon";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sent" | "error";
 
 // Reuses the WhatsApp link already defined in brand.social so there's one
 // source of truth; falls back to a tel: link if that entry is ever removed.
@@ -15,15 +15,39 @@ const whatsappHref =
   brand.social.find((s) => s.label.toLowerCase() === "whatsapp")?.href ??
   `tel:${brand.phone.replace(/[^\d+]/g, "")}`;
 
+/**
+ * O formulário abre o WhatsApp com a mensagem pronta, em vez de mandar um
+ * e-mail pelo servidor.
+ *
+ * Por quê: o envio por e-mail depende de uma chave de API configurada no
+ * ambiente de deploy, e sem ela o formulário recusava o envio. Pelo WhatsApp
+ * não há nada para configurar, a conversa já começa no canal onde a resposta
+ * acontece, e o visitante vê o que está mandando antes de mandar.
+ *
+ * `src/app/api/contact/route.ts` continua no projeto e funcionando. Para
+ * voltar ao e-mail, é trocar o corpo de `handleSubmit` pelo `fetch` daquela
+ * rota — o histórico do git tem a versão anterior inteira.
+ */
+function montarMensagem(d: Record<string, string>): string {
+  const linhas = [
+    "Olá! Vim pelo site.",
+    "",
+    `*Nome:* ${d.name}`,
+    `*E-mail:* ${d.email}`,
+  ];
+  if (d.company) linhas.push(`*Empresa:* ${d.company}`);
+  if (d.service) linhas.push(`*Serviço de interesse:* ${d.service}`);
+  if (d.message) linhas.push("", d.message);
+  return linhas.join("\n");
+}
+
 export function ContactCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const traceRef = useRef<SVGPathElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
   const [status, setStatus] = useState<Status>("idle");
-  // A rota distingue "sem serviço de envio configurado", "muitas mensagens em
-  // pouco tempo" e "o provedor recusou", e cada um pede uma ação diferente de
-  // quem está lendo. Um "algo deu errado" genérico jogaria os três fora.
-  const [errorMessage, setErrorMessage] = useState("");
+  /** Preenchido só quando o pop-up é bloqueado, para oferecer o link na mão. */
+  const [whatsappUrl, setWhatsappUrl] = useState("");
 
   useGSAP(
     () => {
@@ -106,28 +130,29 @@ export function ContactCTA() {
     { scope: sectionRef },
   );
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    setStatus("sending");
-    setErrorMessage("");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const corpo = await res.json().catch(() => null);
-        throw new Error(typeof corpo?.error === "string" ? corpo.error : "");
-      }
+    const dados = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    const url = `${whatsappHref}?text=${encodeURIComponent(montarMensagem(dados))}`;
+
+    // `window.open` chamado direto no handler do submit conta como ação do
+    // usuário, então o bloqueador de pop-up deixa passar. Se ainda assim vier
+    // `null`, o link fica na tela para a pessoa clicar — melhor que um botão
+    // que não faz nada.
+    //
+    // Sem "noopener" na string de opções, de propósito: com ela o `window.open`
+    // devolve `null` SEMPRE, por especificação, e aí o teste acima acusaria
+    // bloqueio em toda submissão bem-sucedida. A proteção vem de anular o
+    // `opener` logo depois, que é o que "noopener" faz de útil aqui.
+    const aba = window.open(url, "_blank");
+    if (aba) {
+      aba.opener = null;
       setStatus("sent");
+      setWhatsappUrl("");
       form.reset();
-    } catch (err) {
-      // A mensagem só aparece se veio do servidor; uma falha de rede não tem
-      // nada de útil a dizer além do texto padrão.
-      setErrorMessage(err instanceof Error ? err.message : "");
+    } else {
+      setWhatsappUrl(url);
       setStatus("error");
     }
   }
@@ -272,21 +297,36 @@ export function ContactCTA() {
             />
           </div>
 
+          {/* O rótulo diz o que o botão faz: abrir o WhatsApp numa aba nova é
+              surpresa demais para um botão escrito só "Enviar mensagem". */}
           <button
             ref={submitRef}
             type="submit"
-            disabled={status === "sending"}
-            className="relative mt-2 inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.08em] text-white uppercase transition-opacity disabled:opacity-60"
+            className="relative mt-2 inline-flex items-center justify-center gap-2.5 rounded-full px-7 py-3.5 text-sm font-semibold tracking-[0.08em] text-white uppercase"
             style={{ background: "var(--gradient-brand)" }}
           >
-            {status === "sending" ? "Enviando..." : "Enviar mensagem"}
+            <SocialIcon name="whatsapp" className="h-4 w-4" />
+            Enviar pelo WhatsApp
           </button>
 
+          <p className="text-xs leading-relaxed text-[var(--color-fg-faint)]">
+            Abre o WhatsApp com a mensagem pronta. Você confere antes de enviar. Prefere e-mail?{" "}
+            <a href={`mailto:${brand.email}`} className="text-[var(--color-cyan)] underline underline-offset-2">
+              {brand.email}
+            </a>
+          </p>
+
           <p role="status" className="min-h-[1.2em] text-sm">
-            {status === "sent" && <span className="text-[var(--color-cyan)]">Recebemos sua mensagem — retornamos em breve.</span>}
-            {status === "error" && (
+            {status === "sent" && (
+              <span className="text-[var(--color-cyan)]">Abrimos o WhatsApp numa aba nova — é só enviar por lá.</span>
+            )}
+            {status === "error" && whatsappUrl && (
               <span className="text-red-400">
-                {errorMessage || `Algo deu errado. Tente novamente ou escreva para ${brand.email}.`}
+                O navegador bloqueou a aba nova.{" "}
+                <a href={whatsappUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                  Abrir o WhatsApp
+                </a>
+                .
               </span>
             )}
           </p>

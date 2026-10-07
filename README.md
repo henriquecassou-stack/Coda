@@ -29,7 +29,6 @@ certo para conferir tudo antes de apontar o domínio.
 
 | Variável | Valor | Sem ela |
 |---|---|---|
-| `RESEND_API_KEY` | a chave da Resend (veja "Formulário de contato") | O formulário avisa que o envio está indisponível |
 | `NEXT_PUBLIC_SITE_URL` | **só enquanto o site estiver no endereço `.vercel.app`**: esse endereço, sem barra no fim. Com o domínio apontando, pode apagar | A página se anuncia como `codaautomacoes.com` antes de o domínio existir, e a prévia no WhatsApp/LinkedIn sai errada |
 
 Variável nova só vale depois de um novo deploy: **Deployments → ⋯ → Redeploy**.
@@ -76,34 +75,22 @@ ali (usa as cores e o logo da marca automaticamente); não há PNG para exportar
 
 ### Formulário de contato
 
-O formulário da seção "Vamos conversar" envia por e-mail através da
-[Resend](https://resend.com). Para ligá-lo:
+O formulário da seção "Vamos conversar" **abre o WhatsApp com a mensagem já montada** a partir dos
+campos — nome, e-mail, empresa, serviço e mensagem. Não há nada para configurar: funciona assim que
+o site sobe.
 
-1. Crie uma conta na Resend **com o mesmo e-mail que vai receber as mensagens**. Isso importa: sem
-   domínio próprio verificado, a Resend só entrega na caixa dona da conta.
-2. Em **API Keys → Create API Key**, copie a chave (ela só aparece uma vez).
-3. Localmente: `cp .env.example .env.local` e cole a chave em `RESEND_API_KEY`.
-   Na Vercel: **Settings → Environment Variables**, a mesma chave, e um novo deploy.
+A escolha é deliberada. O envio por e-mail dependia de uma chave de API no ambiente de deploy, e sem
+ela o formulário recusava o envio. Pelo WhatsApp a conversa já começa no canal onde a resposta
+acontece, o visitante vê o que está mandando antes de mandar, e o número sai de `brand.phone`, como
+todo o resto.
 
-Só isso. `CONTACT_TO_EMAIL` e `CONTACT_FROM_EMAIL` são opcionais — sem elas o e-mail vai para o
-endereço em `src/lib/content.ts`, assinado pelo remetente de testes da Resend.
+O número de destino e o texto saem de `montarMensagem` em `src/components/sections/ContactCTA.tsx`.
 
-Quando tiver domínio próprio, verifique-o na Resend e defina
-`CONTACT_FROM_EMAIL="CODA <contato@seudominio.com.br>"`. Aí o e-mail passa a sair do seu domínio,
-cai menos em spam e o formulário consegue escrever para qualquer endereço, não só para o seu.
-
-**Sem `RESEND_API_KEY` o formulário não finge que enviou**: ele responde "envio indisponível" e
-manda a pessoa usar o e-mail ou o WhatsApp. É proposital — um lead perdido em silêncio é pior que um
-erro visível. Se o formulário mostrar essa mensagem em produção, é a variável que está faltando.
-
-Duas coisas para saber sobre `src/app/api/contact/route.ts`:
-
-- **Limite de envios**: 5 por IP a cada 10 minutos, guardado na memória do processo. Segura o caso
-  comum, mas não sobrevive a um cold start nem é compartilhado entre instâncias. Se o formulário
-  virar alvo de spam de verdade, troque por um limitador com armazenamento compartilhado
-  (Upstash Ratelimit, Vercel KV).
-- **Quando o envio falha**, os dados do contato vão para o log do servidor junto com o erro. É de
-  propósito: é o que permite responder à mão um lead que não chegou. Vale saber que eles ficam lá.
+**Quer voltar ao envio por e-mail?** `src/app/api/contact/route.ts` continua no projeto, inteira e
+funcionando: valida o payload, limita envios por IP e manda pela [Resend](https://resend.com).
+Para usá-la, troque o corpo de `handleSubmit` pelo `fetch("/api/contact", …)` — o histórico do git
+tem a versão anterior — e defina `RESEND_API_KEY` no ambiente de deploy (crie a conta com o mesmo
+e-mail que vai receber: sem domínio verificado, a Resend só entrega na caixa dona da conta).
 
 Outros comandos:
 
@@ -126,7 +113,6 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Depoimentos** | `testimonials` | Citações reais com nome, cargo e empresa — e autorização do cliente. Depoimento anônimo convence pouco. |
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
 | ~~WhatsApp / telefone~~ | `brand.phone` | ✅ Número real já configurado (`+55 (41) 99520-9354`). O link do WhatsApp sai dele por cálculo — trocar a constante `phone` troca os dois. |
-| **Chave da Resend** | `RESEND_API_KEY` | O formulário já está ligado ao e-mail real, mas **precisa da chave para enviar** — veja "Formulário de contato" acima. Sem ela, o formulário avisa que o envio está indisponível. |
 | ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). |
 | ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automatizacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |
 | ~~LinkedIn~~ | `linkedinUrl` | ✅ Perfil real já configurado. Para trocar, é a URL completa na constante `linkedinUrl` no topo de `content.ts`, e o texto exibido em `linkedinLabel`. |
