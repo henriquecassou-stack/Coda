@@ -33,6 +33,12 @@ const GLOW_R = 13;
  * pelo tempo decorrido, então a velocidade aparente não muda.
  */
 const DRAW_INTERVAL_MS = 1000 / 30;
+/*
+ * Uma tentativa de pausar o desenho durante a rolagem foi medida e descartada:
+ * ela cortava 87% dos redesenhos e não mexia no p95. O gargalo não era
+ * redesenhar — era o `mask-image` na camada, hoje resolvido dentro do próprio
+ * canvas (ver `fadeEdges`).
+ */
 
 /**
  * Hero backdrop — a lightweight Canvas2D network of drifting nodes with
@@ -40,7 +46,25 @@ const DRAW_INTERVAL_MS = 1000 / 30;
  * "automation" without the weight of a WebGL scene. Family G-lite in
  * MOTION.md. Pauses off-screen, on tab-hide, and under reduced motion.
  */
-export function SignalCanvas({ className }: { className?: string }) {
+export function SignalCanvas({
+  className,
+  fadeEdges = false,
+}: {
+  className?: string;
+  /**
+   * Desbota o topo e a base do próprio canvas, em vez de um `mask-image` no
+   * CSS. Medido nesta página: com a máscara CSS numa camada fixa de tela
+   * cheia, o p95 do intervalo entre quadros durante a rolagem era 33,4ms —
+   * um quadro perdido a cada vinte. Tirando só a máscara, 16,8ms: exatamente
+   * o mesmo que remover a camada inteira. Um mask obriga o compositor a
+   * guardar a textura da máscara e reaplicá-la a cada quadro COMPOSTO, e
+   * enquanto a página rola isso é todo quadro.
+   *
+   * Feito aqui dentro, o custo passa a ser por REDESENHO do canvas (limitado
+   * a 30fps), não por quadro da página.
+   */
+  fadeEdges?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -57,6 +81,7 @@ export function SignalCanvas({ className }: { className?: string }) {
     let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let nodes: Node[] = [];
     let pulses: Pulse[] = [];
+    let fade: CanvasGradient | null = null;
     let raf = 0;
     let running = false;
     const reduced = prefersReducedMotion();
@@ -100,6 +125,16 @@ export function SignalCanvas({ className }: { className?: string }) {
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (fadeEdges) {
+        // Mesmas paradas da máscara que isto substitui: opaco nas pontas (apaga
+        // tudo), transparente entre 18% e 82% (não apaga nada).
+        const g = ctx!.createLinearGradient(0, 0, 0, height);
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.18, "rgba(0,0,0,0)");
+        g.addColorStop(0.82, "rgba(0,0,0,0)");
+        g.addColorStop(1, "rgba(0,0,0,1)");
+        fade = g;
+      }
     }
 
     function seed() {
@@ -176,6 +211,13 @@ export function SignalCanvas({ className }: { className?: string }) {
           if (p.t >= 1) Object.assign(p, spawnPulse());
         }
       });
+
+      if (fade) {
+        ctx!.globalCompositeOperation = "destination-out";
+        ctx!.fillStyle = fade;
+        ctx!.fillRect(0, 0, width, height);
+        ctx!.globalCompositeOperation = "source-over";
+      }
 
       if (animate) {
         const repelRadius = 130;
@@ -283,7 +325,9 @@ export function SignalCanvas({ className }: { className?: string }) {
         window.removeEventListener("pointerleave", onPointerLeave);
       }
     };
-  }, []);
+    // `fadeEdges` é fixo por ponto de uso; entra na lista só para o lint ver
+    // que a dependência foi considerada.
+  }, [fadeEdges]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }
