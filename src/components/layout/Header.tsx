@@ -105,10 +105,14 @@ export function Header() {
           { clipPath: "inset(0% 0% 100% 0%)" },
           { clipPath: "inset(0% 0% 0% 0%)", duration: dur.slow, ease: gsapEase.move },
         );
+        // `opacity`, não `autoAlpha`: o autoAlpha zera também a visibility, e
+        // um link com `visibility: hidden` não recebe foco — então o foco que
+        // o efeito acima manda para o primeiro item ao abrir se perdia, e quem
+        // abria o menu pelo teclado ficava com o foco ainda no botão.
         gsap.fromTo(
           links,
-          { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: dur.base, ease: gsapEase.enter, stagger: stagger.base, delay: 0.12 },
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: dur.base, ease: gsapEase.enter, stagger: stagger.base, delay: 0.12 },
         );
       } else {
         document.body.style.overflow = "";
@@ -128,6 +132,7 @@ export function Header() {
   );
 
   return (
+    <>
     <header
       ref={headerRef}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-[var(--dur-base)] ${
@@ -189,14 +194,24 @@ export function Header() {
           </span>
         </button>
       </div>
+    </header>
 
+      {/* O painel fica FORA do <header>, de propósito. Ao rolar, o cabeçalho
+          ganha `backdrop-filter` (o efeito de vidro), e um elemento com
+          backdrop-filter vira o bloco de contenção de todo descendente
+          `position: fixed`. Dentro dele, o `fixed inset-x-0 top-[73px]
+          bottom-0` passava a ser medido contra o próprio cabeçalho, de ~73px
+          de altura: medido, o menu abria com 771px no topo da página e com
+          41px depois de rolar — ou seja, o botão "não funcionava" justamente
+          quando a pessoa já estava lendo o site. z-[49] o mantém logo abaixo
+          do cabeçalho (z-50), para o botão de fechar continuar tocável. */}
       <div
         ref={menuRef}
         id="mobile-menu"
         role="dialog"
         aria-modal="true"
         aria-label="Menu de navegação"
-        className="fixed inset-x-0 top-[73px] bottom-0 hidden flex-col justify-center overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 lg:hidden"
+        className="fixed inset-x-0 top-[73px] bottom-0 z-[49] hidden flex-col justify-center overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg)] px-6 pb-10 lg:hidden"
         style={{ clipPath: "inset(0% 0% 100% 0%)" }}
       >
         {/* Capped width so the links and CTA don't stretch across a tablet;
@@ -222,6 +237,6 @@ export function Header() {
           </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }
