@@ -61,10 +61,43 @@ export class AnalyticsNaoConfigurado extends Error {
   }
 }
 
+/**
+ * Acha a URL e o token REST do banco. Primeiro pelos nomes padrão; depois por
+ * qualquer par com prefixo — a tela da Vercel que conecta o banco ao projeto
+ * deixa escolher um prefixo, e aí `KV_REST_API_URL` vira, por exemplo,
+ * `STORAGE_KV_REST_API_URL`. O token é sempre o par "…URL" → "…TOKEN" do mesmo
+ * nome, o que deixa de fora o token só-de-leitura (READ_ONLY), que não grava.
+ */
 function config() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  return url && token ? { url: url.replace(/\/$/, ""), token } : null;
+  const env = process.env;
+  const padrao = [
+    ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
+    ["KV_REST_API_URL", "KV_REST_API_TOKEN"],
+  ];
+  const comPrefixo = Object.keys(env)
+    .filter((k) => /(_REST_API_URL|_REDIS_REST_URL)$/.test(k))
+    .sort()
+    .map((k) => [k, k.replace(/URL$/, "TOKEN")]);
+
+  // Nos nomes com prefixo, a URL também tem de parecer a de um banco: https
+  // (o Upstash é sempre https), ou o próprio computador, para testes. Sem
+  // isso, a URL REST de outro serviço qualquer poderia ser confundida.
+  const pareceBanco = (url: string) => /^(https:\/\/|http:\/\/(127\.0\.0\.1|localhost)[:/])/.test(url);
+
+  for (const [kUrl, kToken] of padrao) {
+    if (env[kUrl] && env[kToken]) return { url: env[kUrl]!.replace(/\/$/, ""), token: env[kToken]!, origem: kUrl };
+  }
+  for (const [kUrl, kToken] of comPrefixo) {
+    const url = env[kUrl];
+    const token = env[kToken];
+    if (url && token && pareceBanco(url)) return { url: url.replace(/\/$/, ""), token, origem: kUrl };
+  }
+  return null;
+}
+
+/** Nome da variável de onde veio o banco (só o nome) — para o painel mostrar. */
+export function origemDoBanco(): string | null {
+  return config()?.origem ?? null;
 }
 
 export function analyticsConfigurado(): boolean {

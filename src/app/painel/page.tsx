@@ -41,7 +41,7 @@ export default async function Painel({ searchParams }: { searchParams: Promise<R
 
   if (!senhaConfigurada()) return <Aviso titulo="Painel desligado"><AvisoSemSenha /></Aviso>;
   if (!cookieValido(jar.get(COOKIE_PAINEL)?.value)) return <Login erro={typeof params.erro === "string" ? params.erro : ""} />;
-  if (!analyticsConfigurado()) return <Aviso titulo="Falta conectar o banco de dados" sair>{avisoSemBanco}</Aviso>;
+  if (!analyticsConfigurado()) return <Aviso titulo="Falta conectar o banco de dados" sair><AvisoSemBanco /></Aviso>;
 
   const periodo = lerPeriodo(params.periodo);
   const { desde, ate } = janela(periodo);
@@ -51,11 +51,20 @@ export default async function Painel({ searchParams }: { searchParams: Promise<R
     await limparAntigas();
     visitas = await listarVisitas(desde, ate);
   } catch (err) {
-    if (err instanceof AnalyticsNaoConfigurado) return <Aviso titulo="Falta conectar o banco de dados" sair>{avisoSemBanco}</Aviso>;
+    if (err instanceof AnalyticsNaoConfigurado) return <Aviso titulo="Falta conectar o banco de dados" sair><AvisoSemBanco /></Aviso>;
     console.error("[painel] falha ao ler visitas:", err);
     return (
       <Aviso titulo="Não consegui ler as visitas" sair>
-        <p>O banco de dados não respondeu. Recarregue a página em alguns segundos; se continuar, confira se o banco ainda está conectado ao projeto na Vercel.</p>
+        <p>O banco está configurado, mas respondeu com erro. Recarregue em alguns segundos; se continuar, a mensagem abaixo diz o motivo.</p>
+        {/* Só quem passou pela senha vê isto. A mensagem é montada em store.ts e
+            nunca inclui o token. */}
+        <p className="mt-3 rounded-lg border border-red-400/30 bg-red-400/10 p-3 font-mono text-xs break-words text-red-100">
+          {err instanceof Error ? err.message.slice(0, 300) : String(err).slice(0, 300)}
+        </p>
+        <p className="mt-3">
+          Se a mensagem falar em <code>401</code> ou <code>Unauthorized</code>, o token do banco não confere: desconecte e reconecte o banco ao
+          projeto em <strong>Storage</strong> e faça o Redeploy.
+        </p>
       </Aviso>
     );
   }
@@ -232,22 +241,74 @@ function AvisoSemSenha() {
   );
 }
 
-const avisoSemBanco = (
-  <>
-    <p>As visitas precisam de um lugar para ficar guardadas. O banco é gratuito e se liga em dois cliques:</p>
-    <ol>
-      <li>
-        Na Vercel, abra o projeto → aba <strong>Storage</strong> → <strong>Create Database</strong>.
-      </li>
-      <li>
-        Escolha <strong>Upstash for Redis</strong> (plano gratuito) e conecte ao projeto. As variáveis são criadas sozinhas.
-      </li>
-      <li>
-        Em <strong>Deployments</strong>, faça <strong>Redeploy</strong>. A partir daí cada visita ao site começa a aparecer aqui.
-      </li>
-    </ol>
-  </>
-);
+/**
+ * Como em AvisoSemSenha: em vez de repetir "conecte o banco", diz o que ESTE
+ * deploy encontrou. Só NOMES de variáveis aparecem, nunca valores.
+ */
+function AvisoSemBanco() {
+  const nomes = Object.keys(process.env)
+    .filter((k) => /KV|REDIS|UPSTASH|REST_API|POSTGRES|DATABASE|SUPABASE|NEON|MONGO/i.test(k))
+    .sort();
+  const soConexaoDireta = nomes.some((k) => /(^|_)(REDIS|KV)_URL$/i.test(k)) && !nomes.some((k) => /REST/i.test(k));
+  const outroBanco = nomes.some((k) => /POSTGRES|DATABASE|SUPABASE|NEON|MONGO/i.test(k)) && !nomes.some((k) => /REDIS|KV|UPSTASH/i.test(k));
+  const ambiente = process.env.VERCEL_ENV;
+  const nomeAmbiente = ambiente === "production" ? "Production" : ambiente === "preview" ? "Preview" : ambiente;
+
+  return (
+    <>
+      <p>
+        Este deploy{nomeAmbiente ? <> (ambiente <strong>{nomeAmbiente}</strong>)</> : null} não encontrou as variáveis do banco das visitas.
+      </p>
+
+      {nomes.length === 0 ? (
+        <p className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-amber-100">
+          Nenhuma variável de banco de dados chegou a este deploy. Ou o banco ainda não está conectado a este projeto, ou foi conectado sem
+          marcar <strong>{nomeAmbiente ?? "Production"}</strong>, ou faltou o Redeploy depois de conectar.
+        </p>
+      ) : (
+        <div className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-amber-100">
+          <p>
+            Encontrei estas variáveis:{" "}
+            {nomes.map((k, i) => (
+              <span key={k}>
+                {i > 0 && ", "}
+                <code>{k}</code>
+              </span>
+            ))}
+            .
+          </p>
+          {soConexaoDireta && (
+            <p className="mt-2">
+              São só de conexão direta. O painel usa a <strong>API REST</strong> do Upstash — as variáveis que terminam em{" "}
+              <code>REST_API_URL</code> e <code>REST_API_TOKEN</code>. Confira se o banco criado é o <strong>Upstash for Redis</strong>.
+            </p>
+          )}
+          {outroBanco && (
+            <p className="mt-2">
+              Parece um banco de outro tipo (Postgres ou similar). O painel usa o <strong>Upstash for Redis</strong> — crie esse, que também é
+              gratuito, e conecte ao projeto.
+            </p>
+          )}
+        </div>
+      )}
+
+      <p className="mt-4">Para conectar:</p>
+      <ol>
+        <li>
+          Na Vercel, abra o projeto → aba <strong>Storage</strong> → <strong>Create Database</strong> → <strong>Upstash for Redis</strong> (plano
+          gratuito).
+        </li>
+        <li>
+          Na tela de conectar ao projeto, deixe <strong>{nomeAmbiente ?? "Production"}</strong> marcado. Se ele pedir um prefixo, pode deixar o
+          padrão — qualquer prefixo funciona.
+        </li>
+        <li>
+          Em <strong>Deployments → ⋯ → Redeploy</strong>.
+        </li>
+      </ol>
+    </>
+  );
+}
 
 function Login({ erro }: { erro: string }) {
   const mensagem = erro === "senha" ? "Senha incorreta." : erro === "limite" ? "Muitas tentativas. Espere 15 minutos." : "";
