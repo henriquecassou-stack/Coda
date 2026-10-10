@@ -6,8 +6,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // The contact endpoint has nothing to index and shouldn't be crawled.
-      disallow: "/api/",
+      // As rotas de API e o painel de visitas não têm nada para indexar.
+      disallow: ["/api/", "/painel"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

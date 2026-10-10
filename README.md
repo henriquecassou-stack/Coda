@@ -29,6 +29,8 @@ certo para conferir tudo antes de apontar o domínio.
 
 | Variável | Valor | Sem ela |
 |---|---|---|
+| `PAINEL_SENHA` | a senha do painel de visitas | O painel em `/painel` fica desligado |
+| (banco do painel) | criadas sozinhas ao conectar o Upstash em **Storage** — veja "Painel de visitas" | O painel mostra o que falta; o site não é afetado |
 | `NEXT_PUBLIC_SITE_URL` | **só enquanto o site estiver no endereço `.vercel.app`**: esse endereço, sem barra no fim. Com o domínio apontando, pode apagar | A página se anuncia como `codaautomacoes.com` antes de o domínio existir, e a prévia no WhatsApp/LinkedIn sai errada |
 
 Variável nova só vale depois de um novo deploy: **Deployments → ⋯ → Redeploy**.
@@ -100,6 +102,62 @@ npm run start   # roda o build de produção
 npm run lint    # ESLint
 ```
 
+## Painel de visitas
+
+Em **`/painel`** (ex.: `coda-pearl.vercel.app/painel`) você vê quantas visitas o site teve e quanto
+tempo cada uma durou: total, tempo médio e mediano, quantos saíram em menos de 10 segundos, visitas
+por dia (ou por hora, em "Hoje"), de onde vieram, de qual dispositivo, e a lista das visitas
+recentes. Períodos: hoje, 7, 30 e 90 dias.
+
+### Para ligar (uma vez, uns 3 minutos)
+
+1. **O banco.** Na Vercel, abra o projeto → aba **Storage** → **Create Database** → **Upstash for
+   Redis**, plano gratuito → conecte ao projeto. As variáveis do banco são criadas sozinhas.
+2. **A senha.** Em **Settings → Environment Variables**, crie `PAINEL_SENHA` com a senha que você
+   quer usar para entrar no painel.
+3. **Deployments → ⋯ → Redeploy.**
+
+Sem a senha o painel fica desligado (nunca aberto). Sem o banco, ele mostra na tela o que falta
+fazer. Em nenhum dos dois casos o site é afetado: o visitante não vê erro nenhum.
+
+### Como o tempo é contado
+
+Só conta o tempo com a aba **visível** e com a pessoa **ativa**: parar de mexer no site por 2
+minutos pausa o relógio até a próxima interação. Sem isso, uma aba esquecida aberta viraria uma
+visita de uma hora e puxaria a média para cima. Recarregar a página continua a mesma visita.
+
+Não entram na contagem: robôs e navegadores automatizados, e **o seu próprio navegador** — ao entrar
+no painel, ele passa a ser ignorado (dá para desfazer no rodapé do painel). Assim os seus testes não
+inflam os números.
+
+### Privacidade
+
+O painel mede comportamento sem saber quem é a pessoa. Cada visita recebe um código aleatório que
+vive só naquela aba e some quando ela fecha; não há cookie de rastreamento nem identificador que
+atravesse visitas, e o IP nunca é gravado (o país vem da própria Vercel). As visitas ficam
+guardadas por 90 dias e depois são apagadas sozinhas.
+
+### Custo
+
+O plano gratuito do Upstash é cobrado por comando. Cada visita manda um batimento a cada 15
+segundos enquanto a pessoa está ativa, e cada batimento custa 3 comandos — uma visita de 2 minutos
+fica em torno de 25. Abrir o painel custa 4 a 6 comandos, não importa quantas visitas existam. Para
+um site deste porte o plano gratuito sobra; se o tráfego crescer muito, é o primeiro lugar a olhar.
+
+### Onde fica o código
+
+| O quê | Onde |
+|---|---|
+| Rastreador (roda no site) | `src/components/analytics/Tracker.tsx` |
+| Rota que recebe os dados | `src/app/api/track/route.ts` |
+| Banco (Upstash, via `fetch`) | `src/lib/analytics/store.ts` |
+| Contas do painel | `src/lib/analytics/stats.ts` |
+| Senha e login | `src/lib/analytics/auth.ts`, `src/app/api/painel/` |
+| O painel | `src/app/painel/page.tsx` |
+
+O site público vive em `src/app/(site)/` — um grupo de rotas que não muda nenhum endereço — para que
+o painel não herde o cabeçalho, o cursor, as animações nem o próprio rastreador.
+
 ## ⚠️ Checklist antes de publicar
 
 O site está pronto tecnicamente, mas **parte do conteúdo é placeholder ilustrativo**. Publicar como
@@ -128,7 +186,7 @@ A seção **Antes / Depois** (`src/components/sections/FlowShift.tsx`) foi adici
 serve para ilustrar como o trabalho manual se encadeia. Nenhum resultado da CODA é afirmado ali.
 
 Para remover: `git revert` do commit que a criou, ou à mão — apague
-`src/components/sections/FlowShift.tsx`, a linha `<FlowShift />` e seu import em `src/app/page.tsx`,
+`src/components/sections/FlowShift.tsx`, a linha `<FlowShift />` e seu import em `src/app/(site)/page.tsx`,
 e o bloco `flow` em `src/lib/content.ts`.
 
 Para editar o processo desenhado: mexa em `flow.steps` e `flow.waits` no `content.ts`. As posições
@@ -144,7 +202,7 @@ visitante informa nos sliders, e mostra a conta inteira embaixo do resultado. A 
 
 Para remover, se não quiser: `git revert` do commit que a criou, ou à mão — apague
 `src/components/sections/Calculator.tsx`, a linha `<Calculator />` e seu import em
-`src/app/page.tsx`, o bloco `calculator` em `src/lib/content.ts` e o bloco `.calc-range` no final de
+`src/app/(site)/page.tsx`, o bloco `calculator` em `src/lib/content.ts` e o bloco `.calc-range` no final de
 `src/app/globals.css`.
 
 ## Como editar sem mexer nas animações

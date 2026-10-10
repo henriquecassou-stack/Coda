@@ -8,7 +8,7 @@ import { calculator } from "@/lib/content";
 
 /**
  * PROPOSTA — seção nova, ainda não aprovada. Para remover: apague este
- * arquivo, o import em `src/app/page.tsx` e o bloco `calculator` em
+ * arquivo, o import em `src/app/(site)/page.tsx` e o bloco `calculator` em
  * `src/lib/content.ts` (ou simplesmente `git revert` do commit que a criou).
  *
  * Por que ela existe: o resto da página *afirma* que automação economiza
