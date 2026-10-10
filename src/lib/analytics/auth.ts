@@ -12,8 +12,17 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 export const COOKIE_PAINEL = "coda_painel";
 export const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
+/**
+ * A senha configurada, sem espaços nas pontas: ao colar o valor no painel da
+ * Vercel é fácil levar um espaço junto, e aí a senha digitada nunca bateria.
+ * Uma senha só de espaços conta como ausente.
+ */
+function senhaAtual(): string {
+  return (process.env.PAINEL_SENHA ?? "").trim();
+}
+
 export function senhaConfigurada(): boolean {
-  return Boolean(process.env.PAINEL_SENHA);
+  return senhaAtual() !== "";
 }
 
 function assinatura(senha: string): Buffer {
@@ -26,19 +35,19 @@ function iguais(a: Buffer, b: Buffer): boolean {
 }
 
 export function senhaConfere(tentativa: string): boolean {
-  const senha = process.env.PAINEL_SENHA;
+  const senha = senhaAtual();
   if (!senha) return false;
-  return iguais(assinatura(tentativa), assinatura(senha));
+  return iguais(assinatura(tentativa.trim()), assinatura(senha));
 }
 
 export function valorDoCookie(): string {
-  const senha = process.env.PAINEL_SENHA;
+  const senha = senhaAtual();
   if (!senha) throw new Error("PAINEL_SENHA não definida.");
   return assinatura(senha).toString("hex");
 }
 
 export function cookieValido(valor: string | undefined): boolean {
-  const senha = process.env.PAINEL_SENHA;
+  const senha = senhaAtual();
   if (!senha || !valor || !/^[0-9a-f]{64}$/.test(valor)) return false;
   return iguais(Buffer.from(valor, "hex"), assinatura(senha));
 }

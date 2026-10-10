@@ -39,7 +39,7 @@ export default async function Painel({ searchParams }: { searchParams: Promise<R
   const params = await searchParams;
   const jar = await cookies();
 
-  if (!senhaConfigurada()) return <Aviso titulo="Painel desligado">{avisoSemSenha}</Aviso>;
+  if (!senhaConfigurada()) return <Aviso titulo="Painel desligado"><AvisoSemSenha /></Aviso>;
   if (!cookieValido(jar.get(COOKIE_PAINEL)?.value)) return <Login erro={typeof params.erro === "string" ? params.erro : ""} />;
   if (!analyticsConfigurado()) return <Aviso titulo="Falta conectar o banco de dados" sair>{avisoSemBanco}</Aviso>;
 
@@ -172,22 +172,65 @@ function Aviso({ titulo, children, sair = false }: { titulo: string; children: R
   );
 }
 
-const avisoSemSenha = (
-  <>
-    <p>O painel só abre com senha, e nenhuma foi definida ainda. Para ligar:</p>
-    <ol>
-      <li>
-        Na Vercel, abra o projeto → <strong>Settings → Environment Variables</strong>.
-      </li>
-      <li>
-        Crie <code>PAINEL_SENHA</code> com a senha que você quer usar.
-      </li>
-      <li>
-        Em <strong>Deployments</strong>, faça <strong>Redeploy</strong> do último deploy.
-      </li>
-    </ol>
-  </>
-);
+/**
+ * "Painel desligado" quase nunca é falta de variável — a pessoa criou e o
+ * servidor não está vendo. Em vez de repetir as instruções, a página diz o que
+ * ESTE deploy encontrou: em que ambiente está e se existe alguma variável com
+ * nome parecido. Só nomes aparecem aqui, nunca valores.
+ */
+function AvisoSemSenha() {
+  const parecidas = Object.keys(process.env).filter((k) => k !== "PAINEL_SENHA" && /painel|senha/i.test(k));
+  const vazia = process.env.PAINEL_SENHA !== undefined;
+  const ambiente = process.env.VERCEL_ENV;
+  const nomeAmbiente = ambiente === "production" ? "Production" : ambiente === "preview" ? "Preview" : ambiente;
+
+  return (
+    <>
+      <p>
+        Este deploy não está encontrando a variável <code>PAINEL_SENHA</code>
+        {nomeAmbiente ? (
+          <>
+            {" "}
+            (ambiente <strong>{nomeAmbiente}</strong>)
+          </>
+        ) : null}
+        .
+      </p>
+
+      {parecidas.length > 0 && (
+        <p className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-amber-100">
+          Encontrei {parecidas.length === 1 ? "uma variável com nome parecido" : "variáveis com nome parecido"}:{" "}
+          {parecidas.map((k, i) => (
+            <span key={k}>
+              {i > 0 && ", "}
+              <code>{k}</code>
+            </span>
+          ))}
+          . O nome precisa ser exatamente <code>PAINEL_SENHA</code> — maiúsculas, com sublinhado, sem espaço.
+        </p>
+      )}
+      {vazia && (
+        <p className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-amber-100">
+          A variável <code>PAINEL_SENHA</code> existe, mas está vazia.
+        </p>
+      )}
+
+      <p className="mt-4">Confira, nesta ordem:</p>
+      <ol>
+        <li>
+          <strong>Redeploy depois de salvar.</strong> A Vercel só aplica variáveis em deploys novos: <strong>Deployments → ⋯ → Redeploy</strong>.
+        </li>
+        <li>
+          <strong>Ambiente.</strong> Em <strong>Settings → Environment Variables</strong>, a <code>PAINEL_SENHA</code> precisa estar marcada para{" "}
+          <strong>{nomeAmbiente ?? "Production"}</strong>.
+        </li>
+        <li>
+          <strong>Nome.</strong> Exatamente <code>PAINEL_SENHA</code>.
+        </li>
+      </ol>
+    </>
+  );
+}
 
 const avisoSemBanco = (
   <>
