@@ -171,10 +171,15 @@ continua igual.
 - **Segurança:** o site tem uma Content-Security-Policy (em `next.config.ts`) que só libera os
   domínios do Google que o GA usa. Se um dia entrar outro script de fora (Pixel do Meta, Hotjar…),
   o domínio dele tem de ser liberado ali também, senão o navegador bloqueia sem aviso.
-- **Cookies:** ao contrário do painel, o GA grava cookies (`_ga`) no navegador do visitante. Pela
-  LGPD, o recomendado é avisar isso numa política de privacidade ou num aviso de cookies.
+- **Aviso de cookies (LGPD):** ao contrário do painel, o GA grava cookies (`_ga`). Por isso ele só
+  carrega depois que o visitante clica em **Aceitar** no aviso do canto da tela; antes disso o
+  script do Google nem é baixado. Quem recusa não é medido pelo GA, e o GA vai mostrar menos
+  visitas que o `/painel`, que não usa cookie e conta todo mundo. A escolha fica salva no navegador,
+  e o link **Preferências de cookies**, no rodapé, reabre o aviso. Quem recusa depois de ter aceitado
+  tem os cookies do Google apagados na hora.
 
-O código fica em `src/components/analytics/GoogleAnalytics.tsx`.
+O código fica em `src/components/analytics/GoogleAnalytics.tsx` (o GA),
+`src/components/ui/CookieBanner.tsx` (o aviso) e `src/lib/consent.ts` (a escolha salva).
 
 ## ⚠️ Checklist antes de publicar
 

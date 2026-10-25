@@ -7,6 +7,8 @@ import { dur, gsapEase, stagger } from "@/lib/motion-tokens";
 import { brand, footer } from "@/lib/content";
 import { Logo } from "@/components/ui/Logo";
 import { SocialIcon, type IconName } from "@/components/ui/SocialIcon";
+import { gaId } from "@/lib/site";
+import { abrirPreferenciasCookies } from "@/lib/consent";
 
 export function Footer() {
   const rootRef = useRef<HTMLElement>(null);
@@ -119,9 +121,20 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-[var(--color-border)] pt-8 sm:flex-row sm:items-center">
-          <p className="text-xs text-[var(--color-fg-faint)]">
-            © {new Date().getFullYear()} {brand.name}. Todos os direitos reservados.
-          </p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <p className="text-xs text-[var(--color-fg-faint)]">
+              © {new Date().getFullYear()} {brand.name}. Todos os direitos reservados.
+            </p>
+            {gaId && (
+              <button
+                type="button"
+                onClick={abrirPreferenciasCookies}
+                className="text-xs text-[var(--color-fg-faint)] underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:text-white hover:underline"
+              >
+                Preferências de cookies
+              </button>
+            )}
+          </div>
           <div className="flex gap-3">
             {brand.social.map((s) => (
               <a

@@ -9,6 +9,7 @@ import { PageSignal } from "@/components/canvas/PageSignal";
 import { StructuredData } from "@/components/StructuredData";
 import { Tracker } from "@/components/analytics/Tracker";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { CookieBanner } from "@/components/ui/CookieBanner";
 
 /**
  * O "chrome" do site público. Vive num grupo de rotas, e não no layout raiz,
@@ -40,6 +41,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Header />
       <main id="conteudo">{children}</main>
       <Footer />
+      <CookieBanner />
     </>
   );
 }

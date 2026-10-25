@@ -355,3 +355,19 @@ html.has-custom-cursor .cursor-layer {
 .calc-range:active::-moz-range-thumb {
   transform: scale(1.15);
 }
+
+/* Aviso de cookies — sobe de leve ao aparecer; parado sob reduced motion. */
+.cookie-banner {
+  animation: cookie-entra var(--dur-base) var(--ease-enter) both;
+}
+@keyframes cookie-entra {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift-md));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cookie-banner {
+    animation: none;
+  }
+}
