@@ -158,6 +158,24 @@ um site deste porte o plano gratuito sobra; se o tráfego crescer muito, é o pr
 O site público vive em `src/app/(site)/` — um grupo de rotas que não muda nenhum endereço — para que
 o painel não herde o cabeçalho, o cursor, as animações nem o próprio rastreador.
 
+## Google Analytics
+
+O site também manda as visitas para o **Google Analytics 4** (ID `G-EEC6W6H9HX`). Os números
+aparecem em [analytics.google.com](https://analytics.google.com) → **Relatórios → Tempo real**
+minutos depois do deploy. Os dois sistemas rodam juntos e não se atrapalham: o painel `/painel`
+continua igual.
+
+- **Trocar ou desligar:** o ID fica em `gaId`, em `src/lib/site.ts`. Deixar `""` desliga o GA.
+- **O que não é medido:** o `/painel`, navegadores automatizados e o seu próprio navegador depois de
+  entrar no painel (a mesma marca "não contar" vale para os dois sistemas).
+- **Segurança:** o site tem uma Content-Security-Policy (em `next.config.ts`) que só libera os
+  domínios do Google que o GA usa. Se um dia entrar outro script de fora (Pixel do Meta, Hotjar…),
+  o domínio dele tem de ser liberado ali também, senão o navegador bloqueia sem aviso.
+- **Cookies:** ao contrário do painel, o GA grava cookies (`_ga`) no navegador do visitante. Pela
+  LGPD, o recomendado é avisar isso numa política de privacidade ou num aviso de cookies.
+
+O código fica em `src/components/analytics/GoogleAnalytics.tsx`.
+
 ## ⚠️ Checklist antes de publicar
 
 O site está pronto tecnicamente, mas **parte do conteúdo é placeholder ilustrativo**. Publicar como

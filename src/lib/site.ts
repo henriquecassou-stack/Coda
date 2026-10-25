@@ -11,3 +11,10 @@
  * ainda não serve aquele conteúdo.
  */
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://codaautomacoes.com").replace(/\/$/, "");
+
+/**
+ * ID de medição do Google Analytics 4 (Admin → Fluxos de dados → o fluxo do
+ * site). Não é segredo: ele aparece no código de toda página que usa o GA.
+ * Deixar vazio desliga o Google Analytics sem mexer em mais nada.
+ */
+export const gaId = "G-EEC6W6H9HX";

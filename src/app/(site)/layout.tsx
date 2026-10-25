@@ -8,6 +8,7 @@ import { CursorTrail } from "@/components/ui/CursorTrail";
 import { PageSignal } from "@/components/canvas/PageSignal";
 import { StructuredData } from "@/components/StructuredData";
 import { Tracker } from "@/components/analytics/Tracker";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
 /**
  * O "chrome" do site público. Vive num grupo de rotas, e não no layout raiz,
@@ -35,6 +36,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <CustomCursor />
       <CursorTrail />
       <Tracker />
+      <GoogleAnalytics />
       <Header />
       <main id="conteudo">{children}</main>
       <Footer />
