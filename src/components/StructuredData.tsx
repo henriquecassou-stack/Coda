@@ -8,8 +8,7 @@ import { siteUrl } from "@/lib/site";
  * social links in `content.ts`, this block follows automatically.
  */
 export function StructuredData() {
-  const data = {
-    "@context": "https://schema.org",
+  const organization = {
     "@type": "ProfessionalService",
     "@id": `${siteUrl}/#organization`,
     name: brand.name,
@@ -17,7 +16,9 @@ export function StructuredData() {
     description: brand.positioning,
     slogan: brand.tagline,
     image: `${siteUrl}/opengraph-image`,
-    logo: `${siteUrl}/icon.svg`,
+    // PNG quadrado de 512px num endereço fixo: o Google exige no mínimo
+    // 112x112 e lê raster com mais segurança que SVG.
+    logo: `${siteUrl}/logo.png`,
     email: brand.email,
     telephone: brand.phone,
     areaServed: { "@type": "Country", name: "Brasil" },
@@ -35,6 +36,19 @@ export function StructuredData() {
       })),
     },
   };
+
+  // O nome que o Google mostra acima do endereço nos resultados ("CODA" em vez
+  // de "codaautomacoes.com"). Ele lê isto do bloco WebSite da página inicial.
+  const website = {
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: brand.name,
+    alternateName: ["CODA Automações", "codaautomacoes.com"],
+    url: `${siteUrl}/`,
+    publisher: { "@id": `${siteUrl}/#organization` },
+  };
+
+  const data = { "@context": "https://schema.org", "@graph": [website, organization] };
 
   return (
     <script

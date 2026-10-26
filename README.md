@@ -260,9 +260,15 @@ variáveis.
 
 ### Logo / símbolo da marca
 
-O símbolo "<" é um SVG puro em **`src/components/ui/Logo.tsx`** (sem imagem raster). O favicon usa a
-mesma forma em **`src/app/icon.svg`**. Para ajustar o desenho, edite os pontos do `path` nesses dois
-arquivos (mantenha os dois iguais).
+O símbolo "<" é um SVG puro em **`src/components/ui/Logo.tsx`**. O favicon usa a mesma forma em
+**`src/app/icon.svg`**. Para ajustar o desenho, edite os pontos do `path` nesses dois arquivos (mantenha
+os dois iguais) e rode **`npm run icones`**: ele gera, a partir do `icon.svg`, as versões em imagem que
+o Google e os celulares usam (`favicon.ico`, `icon1.png`, `apple-icon.png` e `public/logo.png`).
+
+No Google, o ícone ao lado do resultado vem do `favicon.ico`/`icon1.png`, e o nome "CODA" vem do bloco
+`WebSite` em `src/components/StructuredData.tsx`. O Google só atualiza os dois quando volta a visitar o
+site, o que leva de alguns dias a algumas semanas. Para apressar, use o Search Console: **Inspeção de
+URL** → `https://codaautomacoes.com/` → **Solicitar indexação**.
 
 ### Imagens do portfólio
 
