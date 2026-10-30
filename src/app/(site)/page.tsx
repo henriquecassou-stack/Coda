@@ -9,7 +9,15 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
 import { ContactCTA } from "@/components/sections/ContactCTA";
+import type { Metadata } from "next";
 import { showPortfolio, showPricing } from "@/lib/content";
+
+// Título, descrição e prévia social vêm do layout raiz; aqui só o endereço
+// oficial desta página, para o Google juntar variações (com ?utm=…, com
+// barra no fim etc.) num endereço só.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

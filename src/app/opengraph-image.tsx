@@ -6,7 +6,8 @@ import { brand } from "@/lib/content";
  * Generated at build time from the same brand tokens as the site, so it can
  * never drift from the palette the way a hand-exported PNG would.
  */
-export const alt = "CODA — Websites + Automações";
+// Descreve o que está na imagem (o texto do card), para quem não a vê.
+export const alt = "CODA — Automações com IA e sites que convertem";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

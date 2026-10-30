@@ -18,26 +18,33 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
-const title = "CODA — Websites + Automações";
+// O título e a descrição são o que aparece no resultado do Google. Os termos
+// que as pessoas digitam ("automação com IA", "criação de sites") vêm antes da
+// marca: quem ainda não conhece a CODA não procura por "CODA". Título com até
+// ~60 caracteres e descrição com até ~155, para o Google não cortar no meio.
+const title = "Automação com IA e Criação de Sites para Empresas | CODA";
 const description =
-  "Automação inteligente e sites que convertem, para pequenas e médias empresas que querem operar como grandes.";
+  "Agência de automação com IA e criação de sites para pequenas e médias empresas: agentes de IA no WhatsApp, integração com CRM e ERP e sites que convertem.";
+// Na prévia do WhatsApp/LinkedIn a marca já aparece no card, então ela vem primeiro.
+const shareTitle = "CODA — Automação com IA e Criação de Sites";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  alternates: { canonical: "/" },
+  // O canonical fica na página inicial ((site)/page.tsx), e não aqui: no layout
+  // raiz ele era herdado pelo 404 e pelo painel, que diziam "eu sou a home".
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: "/",
     siteName: "CODA",
-    title,
+    title: shareTitle,
     description,
   },
   twitter: {
     card: "summary_large_image",
-    title,
+    title: shareTitle,
     description,
   },
 };
