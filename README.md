@@ -195,7 +195,7 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
 | ~~WhatsApp / telefone~~ | `brand.phone` | ✅ Número real já configurado (`+55 (41) 99520-9354`). O link do WhatsApp sai dele por cálculo — trocar a constante `phone` troca os dois. |
 | ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). |
-| ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automatizacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |
+| ~~Instagram~~ | `instagramHandle` | ✅ Perfil real já configurado (`coda.automacoes`). Para trocar, é a constante `instagramHandle` no topo de `content.ts` — o rodapé, o canal direto no contato e o `sameAs` dos dados estruturados saem todos dela. |
 | ~~LinkedIn~~ | `linkedinUrl` | ✅ Perfil real já configurado. Para trocar, é a URL completa na constante `linkedinUrl` no topo de `content.ts`, e o texto exibido em `linkedinLabel`. |
 | ~~Domínio~~ | `src/lib/site.ts` | ✅ `codaautomacoes.com` já configurado como padrão. Falta registrá-lo e apontá-lo na Vercel — veja "Domínio" acima. |
 
