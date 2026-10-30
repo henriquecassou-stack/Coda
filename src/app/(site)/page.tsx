@@ -10,7 +10,7 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { Pricing } from "@/components/sections/Pricing";
 import { ContactCTA } from "@/components/sections/ContactCTA";
 import type { Metadata } from "next";
-import { showPortfolio, showPricing } from "@/lib/content";
+import { showPortfolio, showPricing, showTestimonials } from "@/lib/content";
 
 // Título, descrição e prévia social vêm do layout raiz; aqui só o endereço
 // oficial desta página, para o Google juntar variações (com ?utm=…, com
@@ -31,7 +31,8 @@ export default function Home() {
       {/* Fora do ar enquanto os cases forem inventados — ver `showPortfolio`. */}
       {showPortfolio && <Portfolio />}
       <Manifesto />
-      <Testimonials />
+      {/* Fora do ar enquanto os depoimentos forem de exemplo — ver `showTestimonials`. */}
+      {showTestimonials && <Testimonials />}
       {/* Fora do ar enquanto o preço for "sob consulta" — ver `showPricing`. */}
       {showPricing && <Pricing />}
       <ContactCTA />

@@ -84,6 +84,14 @@ export const showPortfolio = false;
  */
 export const showPricing = false;
 
+/**
+ * Os depoimentos também estão fora. Os três em `testimonials` são de
+ * exemplo, sem cliente real por trás, e o dono decidiu tirá-los até haver
+ * citações reais com nome, empresa e autorização. Volte para `true` quando
+ * trocar o conteúdo de `testimonials`.
+ */
+export const showTestimonials = false;
+
 export const nav = [
   { label: "Serviços", href: "#servicos" },
   { label: "Como funciona", href: "#como-funciona" },
@@ -93,7 +101,9 @@ export const nav = [
 ];
 
 export const hero = {
-  eyebrow: "AGÊNCIA DE AUTOMAÇÃO E DESENVOLVIMENTO",
+  // Espaços não separáveis (\u00a0) na segunda frase: no celular a linha
+  // quebra depois do ponto, e não no meio de "SEU SITE VENDENDO".
+  eyebrow: "SUA EMPRESA NO AUTOMÁTICO. SEU\u00a0SITE\u00a0VENDENDO.",
   headlineLines: ["NÓS CONSTRUÍMOS", "O QUE SUA EMPRESA", "AINDA NÃO SABE", "QUE PRECISA."],
   highlightWord: "AINDA NÃO SABE",
   sub: "Automações com IA que eliminam trabalho manual e sites que convertem — desenhados, construídos e otimizados pela mesma equipe.",
@@ -142,20 +152,15 @@ export const services = [
  * Bento-grid capability cards — asymmetric sizes are intentional
  * (see MOTION.md "2026-09-11 — layout inspiration pass").
  *
- * ⚠️ ATENÇÃO — os números abaixo são ILUSTRATIVOS, não são resultados medidos
- * da CODA. Publicá-los como fato é propaganda enganosa e é a primeira coisa
- * que um cliente questiona numa reunião. Antes de publicar, escolha um
- * caminho para cada célula com número:
+ * Só entra aqui o que é verdade sem depender de medição: capacidades do
+ * serviço (`atendimento`, `integracoes`) e o prazo que o dono definiu
+ * (`prazo`, 1 semana). As células de resultado ("-70% de tempo em tarefas
+ * manuais", "+2.4x leads") eram ilustrativas e saíram a pedido do dono.
  *
- *   1. Troque pelo número real (o ideal) e diga a origem no `label`, ex.:
- *      "menos tempo em tarefas manuais — média de 6 clientes em 2026".
- *   2. Se ainda não há medição, reescreva como capacidade em vez de
- *      resultado — é o que a célula `atendimento` já faz ("24/7" + o que o
- *      serviço entrega), verdadeiro sem depender de número medido.
- *
- * As células `atendimento` e `integracoes` já seguem o caminho 2 e podem ir
- * ao ar como estão. `prazo` foi definido por você (1 semana). Faltam `tempo`
- * (-70%) e `leads` (+2.4x), que continuam ilustrativos.
+ * Para trazer um resultado de volta, use o número real e diga a origem no
+ * `label`, ex.: "menos tempo em tarefas manuais — média de 6 clientes em
+ * 2026" (tipo `stat`, tamanho `lg` ou `md`). Ao mexer nas células, confira
+ * que os tamanhos ainda fecham as 4 colunas do desktop.
  */
 export type CapabilityCell =
   | {
@@ -168,7 +173,7 @@ export type CapabilityCell =
       suffix?: string;
       label: string;
     }
-  | { id: string; size: "md"; kind: "text"; value: string; label: string }
+  | { id: string; size: "md" | "wide"; kind: "text"; value: string; label: string }
   | { id: string; size: "wide"; kind: "chips"; label: string; chips: string[] };
 
 export const capabilities: {
@@ -180,30 +185,12 @@ export const capabilities: {
   headlineGradient: "NA PRÁTICA.",
   cells: [
     {
-      id: "tempo",
-      size: "lg",
-      kind: "stat",
-      value: 70,
-      prefix: "-",
-      suffix: "%",
-      label: "menos tempo gasto em tarefas manuais depois de uma automação com IA",
-    },
-    {
       id: "atendimento",
-      size: "md",
+      // "wide" + "wide" fecha a linha de 4 colunas no desktop.
+      size: "wide",
       kind: "text",
       value: "24/7",
       label: "Atendimento automático que nunca dorme — no WhatsApp, e-mail e formulário",
-    },
-    {
-      id: "leads",
-      size: "md",
-      kind: "stat",
-      value: 2.4,
-      decimals: 1,
-      prefix: "+",
-      suffix: "x",
-      label: "mais leads qualificados, sem aumentar o time comercial",
     },
     {
       id: "integracoes",
@@ -356,7 +343,7 @@ export const portfolio: PortfolioItem[] = [
   },
 ];
 
-// Illustrative testimonials — replace with real client quotes.
+// Exemplos, fora do ar (`showTestimonials`) — troque por citações reais.
 export const testimonials = [
   {
     quote:

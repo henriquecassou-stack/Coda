@@ -190,8 +190,8 @@ primeira pergunta do cliente. O que falta trocar, tudo em `src/lib/content.ts`:
 | O quê | Onde | O que é preciso |
 |---|---|---|
 | **Cases do portfólio** | `portfolio` | 4 projetos reais + prints. Coloque as imagens em `public/images/cases/` e preencha `image` / `imageAlt`. Sem `image`, o card usa o gradiente da marca (estado atual). Veja `public/images/cases/README.md`. |
-| **Números das capacidades** | `capabilities` | `-70%`, `+2.4x` e `3 semanas` são inventados. Troque pelos reais citando a origem no `label`, ou reescreva como capacidade em vez de resultado (é o que a célula `atendimento` já faz). |
-| **Depoimentos** | `testimonials` | Citações reais com nome, cargo e empresa — e autorização do cliente. Depoimento anônimo convence pouco. |
+| ~~Números das capacidades~~ | `capabilities` | ✅ Os números de exemplo (`-70%`, `+2.4x`) saíram. Ficaram o "24/7", as integrações e o prazo de 1 semana. Quando houver resultado medido, ele volta citando a origem no `label`. |
+| **Depoimentos** | `testimonials` | Fora do ar (`showTestimonials = false`) até haver citações reais com nome, cargo e empresa — e autorização do cliente. |
 | **Preços** | `pricing` | Hoje todos dizem "Sob consulta". Se tiver faixa de preço, ela converte melhor. |
 | ~~WhatsApp / telefone~~ | `brand.phone` | ✅ Número real já configurado (`+55 (41) 99520-9354`). O link do WhatsApp sai dele por cálculo — trocar a constante `phone` troca os dois. |
 | ~~E-mail~~ | `brand.email` | ✅ Caixa real já configurada (`atmzcoda@gmail.com`). |
