@@ -46,6 +46,10 @@ export const brand = {
       saem todos daqui. */
   email: "atmzcoda@gmail.com",
   phone,
+  /** Onde a CODA atende. Aparece no rodapé e no contato, e os dados
+      estruturados (StructuredData.tsx) declaram as mesmas duas cidades —
+      o Google só confia na região se ela também estiver visível na página. */
+  regiao: "Curitiba, Itajaí e região",
   instagramHandle,
   instagramUrl,
   linkedinUrl,
@@ -419,7 +423,7 @@ export const pricing = [
 export const contact = {
   eyebrow: "VAMOS CONVERSAR",
   headline: "PRONTO PARA TIRAR TRABALHO MANUAL DA SUA OPERAÇÃO?",
-  sub: "Conte um pouco sobre seu negócio. Respondemos em até 1 dia útil.",
+  sub: `Conte um pouco sobre seu negócio. Respondemos em até 1 dia útil. Atendemos ${brand.regiao}.`,
   serviceOptions: ["Automações com IA", "Criação de site", "Os dois"],
 };
 

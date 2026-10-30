@@ -54,6 +54,9 @@ export function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--color-fg-muted)]">
               {brand.tagline}
             </p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[var(--color-fg-muted)]">
+              Atendemos {brand.regiao}.
+            </p>
           </div>
 
           {footer.columns.map((col) => (

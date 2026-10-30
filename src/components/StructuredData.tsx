@@ -13,6 +13,21 @@ import { siteUrl } from "@/lib/site";
 export function StructuredData() {
   const orgId = `${siteUrl}/#organization`;
 
+  // As duas regiões que a CODA atende — as mesmas de `brand.regiao`, que está
+  // visível no rodapé e no contato.
+  const areaServed = [
+    {
+      "@type": "City",
+      name: "Curitiba",
+      containedInPlace: { "@type": "State", name: "Paraná" },
+    },
+    {
+      "@type": "City",
+      name: "Itajaí",
+      containedInPlace: { "@type": "State", name: "Santa Catarina" },
+    },
+  ];
+
   // `Organization`, e não `ProfessionalService`: este é um subtipo de
   // `LocalBusiness`, e para o Google todo LocalBusiness precisa de `address`.
   // Sem endereço, o bloco aparecia como inválido no Search Console e não
@@ -41,7 +56,7 @@ export function StructuredData() {
       availableLanguage: "Portuguese",
       areaServed: "BR",
     },
-    areaServed: { "@type": "Country", name: "Brasil" },
+    areaServed,
     // `sameAs` é para perfis que representam a empresa (Instagram, LinkedIn).
     // O link do WhatsApp é um canal de contato, já declarado no `contactPoint`.
     sameAs: brand.social.filter((s) => s.icon !== "whatsapp").map((s) => s.href),
@@ -55,7 +70,7 @@ export function StructuredData() {
           name: service.name,
           description: service.description,
           provider: { "@id": orgId },
-          areaServed: { "@type": "Country", name: "Brasil" },
+          areaServed,
         },
       })),
     },

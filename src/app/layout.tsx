@@ -24,7 +24,7 @@ const inter = Inter({
 // ~60 caracteres e descrição com até ~155, para o Google não cortar no meio.
 const title = "Automação com IA e Criação de Sites para Empresas | CODA";
 const description =
-  "Agência de automação com IA e criação de sites para pequenas e médias empresas: agentes de IA no WhatsApp, integração com CRM e ERP e sites que convertem.";
+  "Automação com IA e criação de sites para empresas de Curitiba, Itajaí e região: agentes de IA no WhatsApp, integração com CRM e ERP e sites que convertem.";
 // Na prévia do WhatsApp/LinkedIn a marca já aparece no card, então ela vem primeiro.
 const shareTitle = "CODA — Automação com IA e Criação de Sites";
 
