@@ -107,6 +107,8 @@ export const services = [
     id: "automacoes",
     kicker: "SERVIÇO 01",
     title: "AUTOMAÇÕES COM IA",
+    /** O mesmo nome em caixa normal, para os dados estruturados (não aparece na tela). */
+    name: "Automações com IA",
     description:
       "Conectamos suas ferramentas e treinamos agentes de IA para tirar o trabalho repetitivo das mãos da sua equipe.",
     bullets: [
@@ -120,6 +122,7 @@ export const services = [
     id: "sites",
     kicker: "SERVIÇO 02",
     title: "CRIAÇÃO DE SITES",
+    name: "Criação de sites",
     description:
       "Sites desenhados sob medida — rápidos, bem estruturados e pensados para converter visita em contato.",
     bullets: [
