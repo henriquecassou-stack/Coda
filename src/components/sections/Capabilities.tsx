@@ -59,6 +59,10 @@ export function Capabilities() {
           if (!statEl) return;
           const decimals = Number(statEl.dataset.statDecimals ?? "0");
           const target = Number(statEl.dataset.statTarget);
+          // O HTML do servidor já traz o número final (é o que o Google e quem
+          // está sem JavaScript leem). Zerar aqui, antes da primeira pintura,
+          // mantém a contagem a partir do 0 exatamente como antes.
+          statEl.textContent = "0";
           const obj = { v: 0 };
           gsap.to(obj, {
             v: target,
@@ -156,7 +160,7 @@ export function Capabilities() {
                           data-stat-target={cell.value}
                           data-stat-decimals={cell.decimals ?? 0}
                         >
-                          0
+                          {cell.value.toFixed(cell.decimals ?? 0)}
                         </span>
                         {cell.suffix}
                       </>
